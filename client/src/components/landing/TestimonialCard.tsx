@@ -27,14 +27,14 @@ export const TestimonialCard = ({ testimonial }: TestimonialCardProps) => {
           {testimonial.avatar && (
             <img
               src={testimonial.avatar}
-              alt={testimonial.name}
+              alt={testimonial.customerName}
               className="w-10 h-10 rounded-full"
             />
           )}
           <div>
-            <div className="font-semibold">{testimonial.name}</div>
+            <div className="font-semibold">{testimonial.customerName}</div>
             <div className="text-sm text-muted-foreground">
-              {testimonial.role} at {testimonial.company}
+              {testimonial.role} at {testimonial.companyName}
             </div>
           </div>
         </div>
