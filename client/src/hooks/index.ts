@@ -52,3 +52,25 @@ export { useTeamName, useTeamNames } from './useTeamName';
 
 // User utility hooks
 export { useUserName, useUserNames } from './useUserName';
+
+// Kanban hooks
+export {
+  useKanbanBoard,
+  useUpdateRequestStatus,
+  useBoardStats,
+  useDragAndDrop,
+  useBoardFilters,
+} from './useKanban';
+
+// Calendar hooks
+export {
+  useCalendarEvents,
+  useCreateCalendarEvent,
+  useUpdateCalendarEvent,
+  useDeleteCalendarEvent,
+  useUpcomingEvents,
+  useCurrentMonthEvents,
+  useEquipmentEvents,
+  useCalendarView,
+  useEventForm,
+} from './useCalendar';

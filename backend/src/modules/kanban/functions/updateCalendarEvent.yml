@@ -1,0 +1,10 @@
+updateCalendarEvent:
+  handler: src/modules/kanban/handlers/updateCalendarEvent.handler
+  events:
+    - httpApi:
+        path: /api/calendar/events/{id}
+        method: put
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    FUNCTION_NAME: updateCalendarEvent

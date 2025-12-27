@@ -1,0 +1,10 @@
+createCalendarEvent:
+  handler: src/modules/kanban/handlers/createCalendarEvent.handler
+  events:
+    - httpApi:
+        path: /api/calendar/events
+        method: post
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    FUNCTION_NAME: createCalendarEvent

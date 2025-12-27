@@ -6,6 +6,7 @@ export { StorageService, SessionStorageService } from './storage';
 export { usersApi, authApi } from './usersApi';
 export { equipmentApi } from './equipmentApi';
 export { publicApi } from './publicApi';
+export { kanbanApi } from './kanbanApi';
 export type {
   User,
   UserRole,

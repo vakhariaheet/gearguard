@@ -1,0 +1,10 @@
+getKanbanBoard:
+  handler: src/modules/kanban/handlers/getKanbanBoard.handler
+  events:
+    - httpApi:
+        path: /api/kanban/board
+        method: get
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    FUNCTION_NAME: getKanbanBoard
