@@ -1,0 +1,12 @@
+deleteRequest:
+  handler: src/modules/requests/handlers/deleteRequest.handler
+  events:
+    - httpApi:
+        path: /api/requests/{id}
+        method: delete
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 30
+  memorySize: 256

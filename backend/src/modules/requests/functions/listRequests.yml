@@ -1,0 +1,12 @@
+listRequests:
+  handler: src/modules/requests/handlers/listRequests.handler
+  events:
+    - httpApi:
+        path: /api/requests
+        method: get
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 30
+  memorySize: 512

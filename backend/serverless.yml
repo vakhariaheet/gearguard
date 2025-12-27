@@ -86,7 +86,6 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-esbuild
   - serverless-domain-manager
-  - serverless-offline
   - serverless-auto-swagger
 
 custom:
@@ -219,6 +218,16 @@ functions:
   - ${file(src/modules/users/functions/deleteUser.yml)}
   - ${file(src/modules/users/functions/getAdminStats.yml)}
   - ${file(src/modules/users/functions/getPermissions.yml)}
+  # Requests module - Maintenance request management
+  - ${file(src/modules/requests/functions/listRequests.yml)}
+  - ${file(src/modules/requests/functions/getRequest.yml)}
+  - ${file(src/modules/requests/functions/createRequest.yml)}
+  - ${file(src/modules/requests/functions/updateRequest.yml)}
+  - ${file(src/modules/requests/functions/deleteRequest.yml)}
+  - ${file(src/modules/requests/functions/assignRequest.yml)}
+  - ${file(src/modules/requests/functions/updateStatus.yml)}
+  - ${file(src/modules/requests/functions/autoFillRequest.yml)}
+  # Demo module
   - ${file(src/modules/demo/functions/userOnly.yml)}
   - ${file(src/modules/demo/functions/adminOnly.yml)}
   - ${file(src/modules/demo/functions/whoami.yml)}

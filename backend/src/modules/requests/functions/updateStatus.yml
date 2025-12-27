@@ -1,0 +1,12 @@
+updateStatus:
+  handler: src/modules/requests/handlers/updateStatus.handler
+  events:
+    - httpApi:
+        path: /api/requests/{id}/status
+        method: put
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 30
+  memorySize: 256
