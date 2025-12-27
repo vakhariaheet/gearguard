@@ -16,6 +16,11 @@ import { HelpPage } from './pages/landing/HelpPage';
 import { TeamListPage } from './pages/teams/TeamListPage';
 import { TeamDetailsPage } from './pages/teams/TeamDetailsPage';
 import { EquipmentListPage } from './pages/equipment/EquipmentListPage';
+import { RequestListPage } from './pages/requests/RequestListPage';
+import { RequestCreatePage } from './pages/requests/RequestCreatePage';
+import { RequestDetailsPage } from './pages/requests/RequestDetailsPage';
+import { RequestEditPage } from './pages/requests/RequestEditPage';
+
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
 import './App.css';
@@ -70,6 +75,22 @@ function App() {
               </Link>
             </div>
           </SignedOut>
+          <SignedIn>
+            <Link to="/dashboard" className="nav-link">
+              Dashboard
+            </Link>
+            <Link to="/requests" className="nav-link">
+              Requests
+            </Link>
+            <Link to="/teams" className="nav-link">
+              Teams
+            </Link>
+            {user?.publicMetadata?.role === 'admin' && (
+              <Link to="/admin" className="nav-link">
+                Admin
+              </Link>
+            )}
+          </SignedIn>
         </nav>
         <div className="auth-section">
           <SignedOut>
@@ -173,6 +194,38 @@ function App() {
           element={
             <ProtectedRoute>
               <TeamDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/requests"
+          element={
+            <ProtectedRoute>
+              <RequestListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/requests/create"
+          element={
+            <ProtectedRoute>
+              <RequestCreatePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/requests/:id"
+          element={
+            <ProtectedRoute>
+              <RequestDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/requests/:id/edit"
+          element={
+            <ProtectedRoute>
+              <RequestEditPage />
             </ProtectedRoute>
           }
         />

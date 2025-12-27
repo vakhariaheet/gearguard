@@ -1,0 +1,12 @@
+autoFillRequest:
+  handler: src/modules/requests/handlers/autoFillRequest.handler
+  events:
+    - httpApi:
+        path: /api/requests/auto-fill
+        method: post
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 30
+  memorySize: 512
