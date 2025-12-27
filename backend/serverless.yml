@@ -234,3 +234,16 @@ functions:
   - ${file(src/modules/teams/functions/suggestTeamAssignment.yml)}
   # WebSocket module
   - ${file(src/modules/websocket/functions/websocket.yml)}
+  # Landing module - Public API endpoints
+  - ${file(src/modules/landing/functions/getLandingStats.yml)}
+  - ${file(src/modules/landing/functions/getDemoData.yml)}
+  - ${file(src/modules/landing/functions/getTestimonials.yml)}
+  - ${file(src/modules/landing/functions/getSystemMetrics.yml)}
+  # Equipment module - Equipment Management
+  - ${file(src/modules/equipment/functions/listEquipment.yml)}
+  - ${file(src/modules/equipment/functions/getEquipment.yml)}
+  - ${file(src/modules/equipment/functions/createEquipment.yml)}
+  - ${file(src/modules/equipment/functions/updateEquipment.yml)}
+  - ${file(src/modules/equipment/functions/deleteEquipment.yml)}
+  - ${file(src/modules/equipment/functions/assessEquipmentHealth.yml)}
+  - ${file(src/modules/equipment/functions/createSampleEquipment.yml)}

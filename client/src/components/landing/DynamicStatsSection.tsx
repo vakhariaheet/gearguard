@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, RefreshCw, Wifi, WifiOff } from 'lucide-react';
+import { Loader2, RefreshCw } from 'lucide-react';
 import { useLandingStats } from '@/hooks/useLandingStats';
 
 interface StatItemProps {
@@ -74,7 +73,7 @@ const StatItem = ({ label, value, suffix, prefix, format, isLoading }: StatItemP
 };
 
 export const DynamicStatsSection = () => {
-  const { data: stats, isLoading, error, isRefetching, dataUpdatedAt } = useLandingStats();
+  const { data: stats, isLoading, isRefetching } = useLandingStats();
 
   // Fallback stats for when API is unavailable
   const fallbackStats = {
@@ -90,7 +89,6 @@ export const DynamicStatsSection = () => {
   };
 
   const displayStats = stats || fallbackStats;
-  const isLiveData = !!stats;
 
   return (
     <section className="py-16 bg-muted/50">
@@ -98,33 +96,13 @@ export const DynamicStatsSection = () => {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
             <h2 className="text-3xl font-bold">Real-Time System Performance</h2>
-            {isLiveData ? (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Wifi className="h-3 w-3 text-green-500" />
-                Live Data
-              </Badge>
-            ) : (
-              <Badge variant="outline" className="flex items-center gap-1">
-                <WifiOff className="h-3 w-3 text-orange-500" />
-                Demo Data
-              </Badge>
-            )}
+
             {isRefetching && <RefreshCw className="h-4 w-4 animate-spin text-blue-500" />}
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             See how GearGuard is transforming maintenance management across industries with live
             system metrics
           </p>
-          {isLiveData && (
-            <p className="text-sm text-muted-foreground mt-2">
-              Last updated: {new Date(dataUpdatedAt || Date.now()).toLocaleTimeString()}
-            </p>
-          )}
-          {error && (
-            <p className="text-sm text-orange-600 mt-2">
-              Showing demo data - Live data temporarily unavailable
-            </p>
-          )}
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
