@@ -1,0 +1,34 @@
+listEquipment:
+  handler: src/modules/equipment/handlers/listEquipment.handler
+  events:
+    - httpApi:
+        path: /api/equipment
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Equipment
+        summary: GET /api/equipment
+        description: List equipment with filtering and pagination
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: Success
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      equipment:
+                        type: array
+                        items:
+                          type: object
+                      totalCount:
+                        type: number
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - Insufficient permissions

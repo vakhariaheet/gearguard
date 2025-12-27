@@ -1,0 +1,33 @@
+createEquipment:
+  handler: src/modules/equipment/handlers/createEquipment.handler
+  events:
+    - httpApi:
+        path: /api/equipment
+        method: POST
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Equipment
+        summary: POST /api/equipment
+        description: Create new equipment
+        methodResponses:
+          - statusCode: 201
+            responseBody:
+              description: Equipment created successfully
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+          - statusCode: 400
+            responseBody:
+              description: Bad Request - Invalid input data
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - Insufficient permissions
+          - statusCode: 409
+            responseBody:
+              description: Conflict - Serial number already exists
