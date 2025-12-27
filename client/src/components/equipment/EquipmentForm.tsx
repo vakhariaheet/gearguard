@@ -6,18 +6,17 @@ import { Textarea } from '../ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useCreateEquipment, useUpdateEquipment } from '../../hooks/useEquipment';
+import { useTeams } from '../../hooks/useTeams';
+import { useUserLookup } from '../../hooks/useUserLookup';
+import { UserSearchInput } from './UserSearchInput';
 import type {
   Equipment,
   CreateEquipmentRequest,
   UpdateEquipmentRequest,
   EquipmentFormData,
 } from '../../types/equipment';
-import {
-  EQUIPMENT_CATEGORIES,
-  EQUIPMENT_STATUSES,
-  DEPARTMENTS,
-  MAINTENANCE_TEAMS,
-} from '../../types/equipment';
+import type { Team } from '../../types/teams';
+import { EQUIPMENT_CATEGORIES, EQUIPMENT_STATUSES, DEPARTMENTS } from '../../types/equipment';
 
 interface EquipmentFormProps {
   equipment?: Equipment;
@@ -29,6 +28,13 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
   const isEditing = !!equipment;
   const createEquipment = useCreateEquipment();
   const updateEquipment = useUpdateEquipment();
+
+  // Load teams for dropdown
+  const { data: teamsData, isLoading: teamsLoading } = useTeams();
+  const teams = teamsData?.data?.teams || [];
+
+  // Lookup user info when editing equipment
+  const { userInfo, isLoading: userLoading } = useUserLookup(equipment?.assignedEmployee);
 
   // Use equipment ID or timestamp to force re-render when equipment changes
   const formKey = equipment ? `edit-${equipment.id}` : 'create-new';
@@ -48,6 +54,11 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
     usageHours: '',
     lastMaintenanceDate: '',
   });
+
+  // Store user info for display
+  const [selectedUserInfo, setSelectedUserInfo] = useState<
+    { name: string; email: string } | undefined
+  >(undefined);
 
   const [errors, setErrors] = useState<Partial<EquipmentFormData>>({});
 
@@ -88,6 +99,21 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
       setTimeout(() => {
         setFormData(newFormData);
       }, 0);
+
+      // If there's an assigned employee, use the looked up user info
+      if (equipment.assignedEmployee && userInfo) {
+        setSelectedUserInfo({
+          name: userInfo.name,
+          email: userInfo.email,
+        });
+      } else if (equipment.assignedEmployee && userLoading) {
+        setSelectedUserInfo({
+          name: 'Loading user details...',
+          email: 'Please wait...',
+        });
+      } else {
+        setSelectedUserInfo(undefined);
+      }
     } else {
       // Reset form for new equipment
       setFormData({
@@ -105,10 +131,11 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
         usageHours: '',
         lastMaintenanceDate: '',
       });
+      setSelectedUserInfo(undefined);
     }
     // Clear any existing errors
     setErrors({});
-  }, [equipment]);
+  }, [equipment, userInfo, userLoading]);
 
   const handleInputChange = (field: keyof EquipmentFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -116,6 +143,20 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
+  };
+
+  const handleUserSelect = (userId: string, userInfo: { name: string; email: string }) => {
+    setFormData((prev) => ({ ...prev, assignedEmployee: userId }));
+    setSelectedUserInfo(userInfo);
+    // Clear error if exists
+    if (errors.assignedEmployee) {
+      setErrors((prev) => ({ ...prev, assignedEmployee: undefined }));
+    }
+  };
+
+  const handleUserClear = () => {
+    setFormData((prev) => ({ ...prev, assignedEmployee: '' }));
+    setSelectedUserInfo(undefined);
   };
 
   const validateForm = (): boolean => {
@@ -139,6 +180,8 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
 
     if (!formData.assignedTeam) {
       newErrors.assignedTeam = 'Assigned team is required';
+    } else if (teams.length > 0 && !teams.find((team: Team) => team.id === formData.assignedTeam)) {
+      newErrors.assignedTeam = 'Please select a valid team';
     }
 
     if (!formData.purchaseDate) {
@@ -294,11 +337,12 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
 
             <div className="space-y-2">
               <Label htmlFor="assignedEmployee">Assigned Employee</Label>
-              <Input
-                id="assignedEmployee"
+              <UserSearchInput
                 value={formData.assignedEmployee}
-                onChange={(e) => handleInputChange('assignedEmployee', e.target.value)}
-                placeholder="Enter employee ID or name"
+                onUserSelect={handleUserSelect}
+                onClear={handleUserClear}
+                selectedUserInfo={selectedUserInfo}
+                placeholder="Search and select an employee..."
               />
             </div>
 
@@ -313,16 +357,22 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
                   console.log('AssignedTeam changed to:', value);
                   handleInputChange('assignedTeam', value);
                 }}
+                disabled={teamsLoading}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select team" />
+                  <SelectValue placeholder={teamsLoading ? 'Loading teams...' : 'Select team'} />
                 </SelectTrigger>
                 <SelectContent>
-                  {MAINTENANCE_TEAMS.map((team) => (
-                    <SelectItem key={team} value={team}>
-                      {team}
+                  {teams.map((team: Team) => (
+                    <SelectItem key={team.id} value={team.id}>
+                      {team.teamName} ({team.specialization})
                     </SelectItem>
                   ))}
+                  {teams.length === 0 && !teamsLoading && (
+                    <SelectItem value="no-teams" disabled>
+                      No teams available
+                    </SelectItem>
+                  )}
                 </SelectContent>
               </Select>
               {errors.assignedTeam && <p className="text-sm text-red-600">{errors.assignedTeam}</p>}

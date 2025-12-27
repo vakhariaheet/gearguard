@@ -261,3 +261,8 @@ functions:
   - ${file(src/modules/landing/functions/getSystemMetrics.yml)}
   - ${file(src/modules/landing/functions/getTestimonials.yml)}
   - ${file(src/modules/landing/functions/getDemoData.yml)}
+  # M05 Enhancement: Enhanced Equipment Functions
+  - ${file(src/modules/equipment/functions/getEquipmentHealth.yml)}
+  - ${file(src/modules/equipment/functions/predictMaintenance.yml)}
+  - ${file(src/modules/equipment/functions/getMaintenanceSchedule.yml)}
+  - ${file(src/modules/equipment/functions/updateEquipmentStatus.yml)}

@@ -6,6 +6,7 @@ export { useAsync, useAsyncCallback } from './useAsync';
 export { useConfirmDialog } from './useConfirmDialog';
 export { useWebSocket, useWebSocketChat, useWebSocketNotifications } from './useWebSocket';
 export { useScrollToTop } from './useScrollToTop';
+export { useUserLookup } from './useUserLookup';
 
 // Landing page hooks
 export {

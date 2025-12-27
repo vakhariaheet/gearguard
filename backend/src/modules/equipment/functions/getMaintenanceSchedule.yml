@@ -1,0 +1,11 @@
+getMaintenanceSchedule:
+  handler: src/modules/equipment/handlers/getMaintenanceSchedule.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}/schedule
+        method: get
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 20
