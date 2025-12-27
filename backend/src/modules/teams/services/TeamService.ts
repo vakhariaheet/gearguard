@@ -146,7 +146,7 @@ export class TeamService {
       `Pagination: total=${result.items?.length}, offset=${offset}, limit=${limit}, paginated=${paginatedItems?.length}`
     );
 
-    // Get members for each team
+    // Get members for each team and enrich lead technician details
     const teamsWithMembers = await Promise.all(
       paginatedItems.map(async (teamRecord: any) => {
         const membersResult = await dynamodb.query('PK = :pk AND begins_with(SK, :sk)', {
@@ -158,7 +158,35 @@ export class TeamService {
           this.mapRecordToTeamMember(record as TeamMemberRecord)
         );
 
-        return this.mapRecordToTeam(teamRecord as TeamRecord, members);
+        // Enrich lead technician details if not already in members
+        let enrichedTeamRecord = teamRecord;
+        if (teamRecord.leadTechnician) {
+          const leadMember = members.find((m) => m.userId === teamRecord.leadTechnician);
+          if (!leadMember) {
+            // Fetch lead technician details from Clerk
+            try {
+              const leadUser = await clerkUserService.getUser(teamRecord.leadTechnician);
+              enrichedTeamRecord = {
+                ...teamRecord,
+                leadTechnicianName:
+                  `${leadUser.firstName || ''} ${leadUser.lastName || ''}`.trim() ||
+                  leadUser.emailAddresses[0]?.emailAddress ||
+                  'Unknown',
+              };
+            } catch (error) {
+              logger.warn(
+                `Failed to fetch lead technician details for ${teamRecord.leadTechnician}:`,
+                error
+              );
+              enrichedTeamRecord = {
+                ...teamRecord,
+                leadTechnicianName: 'Unknown',
+              };
+            }
+          }
+        }
+
+        return this.mapRecordToTeam(enrichedTeamRecord as TeamRecord, members);
       })
     );
 
@@ -557,6 +585,7 @@ Focus on skill match, availability, specialization alignment, and response time.
       maxCapacity: record.maxCapacity,
       isActive: record.isActive,
       leadTechnician: record.leadTechnician,
+      leadTechnicianName: (record as any).leadTechnicianName, // Enriched field
       currentWorkload: record.currentWorkload,
       members,
       createdAt: record.createdAt,

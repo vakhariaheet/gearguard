@@ -128,8 +128,11 @@ export class RequestService {
     } else {
       // Scan all requests (less efficient, but needed for general listing)
       const scanResult = await dynamodb.scan<RequestDynamoItem>({
-        filterExpression: 'SK = :detailsSK',
-        expressionAttributeValues: { ':detailsSK': 'DETAILS' },
+        filterExpression: 'begins_with(PK, :pkPrefix) AND SK = :detailsSK',
+        expressionAttributeValues: {
+          ':pkPrefix': 'REQUEST#',
+          ':detailsSK': 'DETAILS',
+        },
         limit: limit + offset, // Get more to handle offset
       });
 
@@ -253,12 +256,21 @@ export class RequestService {
       throw new Error('Request not found');
     }
 
-    // Update assignment
-    const updatedItem = await dynamodb.update<RequestDynamoItem>(keys, {
+    // Prepare update data
+    const updateData: Partial<RequestDynamoItem> = {
       assignedTeam: assignment.assignedTeam,
       assignedTechnician: assignment.assignedTechnician,
       updatedAt: new Date().toISOString(),
-    });
+    };
+
+    // Automatically update status to "In Progress" when assigning (if currently "New")
+    if (existingRequest.status === 'New') {
+      updateData.status = 'In Progress';
+      updateData.startedAt = new Date().toISOString();
+    }
+
+    // Update assignment
+    const updatedItem = await dynamodb.update<RequestDynamoItem>(keys, updateData);
 
     // Create assignee relationship if technician is assigned
     if (assignment.assignedTechnician) {
@@ -274,7 +286,11 @@ export class RequestService {
       });
     }
 
-    logger.info('Request assigned', { requestId, assignment });
+    logger.info('Request assigned', {
+      requestId,
+      assignment,
+      statusUpdated: existingRequest.status === 'New',
+    });
     return mapDynamoToRequest(updatedItem);
   }
 
