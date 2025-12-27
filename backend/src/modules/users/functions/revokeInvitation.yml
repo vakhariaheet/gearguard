@@ -1,0 +1,28 @@
+revokeInvitation:
+  handler: src/modules/users/handlers/revokeInvitation.handler
+  events:
+    - httpApi:
+        path: /api/admin/invitations/{invitationId}
+        method: DELETE
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Users
+        summary: DELETE /api/admin/invitations/{invitationId}
+        description: revokeInvitation endpoint
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: Success
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - Insufficient permissions

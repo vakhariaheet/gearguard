@@ -1,0 +1,76 @@
+# IDE and Editor
+.kiro
+.agent
+.vscode
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Documents
+*.pdf
+
+# Environment Variables
+*.env
+*.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+.serverless/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Local files
+*.local
+
+# Lock files (optional - uncomment if you want to ignore them)
+# package-lock.json
+# yarn.lock
+# bun.lock
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Client-specific
+client/node_modules/
+client/dist/
+client/build/
+client/.vite/
+client/.env.local
+client/.env.*.local
+client/.cache/
+client/coverage/
+
+# Backend-specific
+backend/node_modules/
+backend/.serverless/
+backend/.env
+backend/.env.*
+backend/coverage/
+backend/.cache/
+docs/*
+guidelines/*

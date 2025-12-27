@@ -1,0 +1,109 @@
+Resources:
+  # DynamoDB Table with PK, SK and 2 GSIs
+  MainTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: ${self:custom.stageConfig.deletionPolicy}
+    Properties:
+      TableName: ${self:service}-${self:provider.stage}-main-table
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1PK
+          AttributeType: S
+        - AttributeName: GSI1SK
+          AttributeType: S
+        - AttributeName: GSI2PK
+          AttributeType: S
+        - AttributeName: GSI2SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: GSI1PK
+              KeyType: HASH
+            - AttributeName: GSI1SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: GSI2
+          KeySchema:
+            - AttributeName: GSI2PK
+              KeyType: HASH
+            - AttributeName: GSI2SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+      Tags:
+        - Key: Environment
+          Value: ${self:provider.stage}
+        - Key: Service
+          Value: ${self:service}
+
+Outputs:
+  # DynamoDB Table Outputs
+  MainTableName:
+    Description: Main DynamoDB Table Name
+    Value:
+      Ref: MainTable
+    Export:
+      Name: ${self:service}-${self:provider.stage}-main-table-name
+
+  MainTableArn:
+    Description: Main DynamoDB Table ARN
+    Value:
+      Fn::GetAtt: [MainTable, Arn]
+    Export:
+      Name: ${self:service}-${self:provider.stage}-main-table-arn
+
+  # HTTP API Outputs (existing)
+  HttpApiId:
+    Description: HTTP API ID
+    Value:
+      Ref: HttpApi
+    Export:
+      Name: ${self:service}-${self:provider.stage}-http-api-id
+
+  HttpApiUrl:
+    Description: HTTP API URL
+    Value:
+      Fn::Join:
+        - ''
+        - - 'https://'
+          - Ref: HttpApi
+          - '.execute-api.'
+          - ${self:provider.region}
+          - '.amazonaws.com'
+    Export:
+      Name: ${self:service}-${self:provider.stage}-http-api-url
+
+  # WebSocket API Outputs
+  WebSocketApiId:
+    Description: WebSocket API ID
+    Value:
+      Ref: WebsocketsApi
+    Export:
+      Name: ${self:service}-${self:provider.stage}-websocket-api-id
+
+  WebSocketApiUrl:
+    Description: WebSocket API URL
+    Value:
+      Fn::Join:
+        - ''
+        - - 'wss://'
+          - Ref: WebsocketsApi
+          - '.execute-api.'
+          - ${self:provider.region}
+          - '.amazonaws.com/'
+          - ${self:provider.stage}
+    Export:
+      Name: ${self:service}-${self:provider.stage}-websocket-url

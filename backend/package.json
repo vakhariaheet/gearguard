@@ -1,0 +1,65 @@
+{
+  "name": "odoo-xadani-backend",
+  "version": "1.0.0",
+  "description": "Production-grade serverless backend with Clean Architecture",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "deploy:test": "./deploy.sh test",
+    "deploy:prod": "./deploy.sh prod",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.952.0",
+    "@aws-sdk/client-dynamodb": "^3.948.0",
+    "@aws-sdk/client-s3": "^3.948.0",
+    "@aws-sdk/client-ses": "^3.948.0",
+    "@aws-sdk/client-sqs": "^3.948.0",
+    "@aws-sdk/credential-provider-node": "^3.948.0",
+    "@aws-sdk/lib-dynamodb": "^3.948.0",
+    "@aws-sdk/s3-request-presigner": "^3.948.0",
+    "@clerk/backend": "^2.27.0",
+    "@google/genai": "^1.33.0",
+    "@opensearch-project/opensearch": "^3.5.1",
+    "accesscontrol": "^2.2.1",
+    "aws-lambda": "^1.0.7",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.130",
+    "@types/jest": "^30.0.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.9.0",
+    "@types/uuid": "^9.0.7",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "eslint": "^8.54.0",
+    "jest": "^30.2.0",
+    "js-yaml": "^4.1.1",
+    "serverless": "^3.38.0",
+    "serverless-auto-swagger": "^3.1.0",
+    "serverless-certificate-creator": "^1.6.0",
+    "serverless-domain-manager": "^8.0.0",
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-esbuild": "^1.49.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "author": "Odoo Xadani Team",
+  "license": "MIT",
+  "keywords": [
+    "serverless",
+    "aws",
+    "lambda",
+    "dynamodb",
+    "typescript",
+    "clean-architecture"
+  ]
+}

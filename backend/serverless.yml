@@ -1,0 +1,228 @@
+service: odoo-xadani-backend
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ap-south-1
+  stage: ${opt:stage, 'dev-heet'}
+  memorySize: ${self:custom.stageConfig.memorySize}
+  timeout: ${self:custom.stageConfig.timeout}
+
+  # Log configuration
+  logRetentionInDays: ${self:custom.stageConfig.logRetentionInDays}
+
+  environment:
+    STAGE: ${self:provider.stage}
+    REGION: ${self:provider.region}
+    CLERK_SECRET_KEY: ${env:CLERK_SECRET_KEY}
+    CLERK_PUBLISHABLE_KEY: ${env:CLERK_PUBLISHABLE_KEY}
+    NODE_ENV: ${self:provider.stage}
+    SWAGGER_USERNAME: ${env:SWAGGER_USERNAME, 'admin'}
+    SWAGGER_PASSWORD: ${env:SWAGGER_PASSWORD, 'changeme'}
+    MAIN_TABLE_NAME: ${self:service}-${self:provider.stage}-main-table
+
+  # IAM permissions
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
+          Resource:
+            - Fn::GetAtt: [MainTable, Arn]
+            - Fn::Join:
+                - '/'
+                - - Fn::GetAtt: [MainTable, Arn]
+                  - 'index/*'
+
+  # HTTP API (API Gateway v2) with JWT Authorizer
+  httpApi:
+    cors: true
+    authorizers:
+      clerkJwtAuthorizer:
+        # Native JWT Authorizer for HTTP API (API Gateway v2)
+        type: jwt
+        identitySource: $request.header.Authorization
+        # =============================================================
+        # CLERK CONFIGURATION - How to set up:
+        # =============================================================
+        # 1. Go to Clerk Dashboard → Configure → JWT Templates
+        # 2. Create a new template OR use "Convex" template as base
+        # 3. Copy the "Issuer" URL and paste below
+        # 4. The issuer URL format: https://<your-clerk-frontend-api>.clerk.accounts.dev
+        #
+        # IMPORTANT: In your JWT Template, add custom claims:
+        # {
+        #   "role": "{{user.public_metadata.role}}",
+        #   "email": "{{user.primary_email_address}}",
+        #   "userid": "{{user.id}}"
+        # }
+        #
+        # Set default role in Clerk Dashboard → Users → User → Public Metadata:
+        # { "role": "user" }  OR  { "role": "admin" }
+        # =============================================================
+        issuerUrl: ${env:CLERK_ISSUER_URL, 'https://your-clerk-instance.clerk.accounts.dev'}
+        # The audience should match the 'aud' claim in your Clerk JWT Template
+        # Typically this is your frontend URL or Clerk Frontend API URL
+        audience:
+          - ${env:CLERK_AUDIENCE, 'https://your-frontend-url.com'}
+
+  # WebSocket API configuration
+  # Note: WebSocket API will be created automatically when websocket events are defined
+
+useDotenv: true
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-esbuild
+  - serverless-domain-manager
+  - serverless-offline
+  - serverless-auto-swagger
+
+custom:
+  # =============================================================
+  # CUSTOM DOMAIN CONFIGURATION
+  # =============================================================
+  # Set to true to enable custom domain (requires ACM certificate)
+  customDomainEnabled: ${env:CUSTOM_DOMAIN_ENABLED, 'false'}
+
+  # Domain settings per stage
+  baseDomain: ${env:BASE_DOMAIN, 'yourdomain.com'}
+  domains:
+    dev-dhruv: api-dev-dhruv.${self:custom.baseDomain}
+    dev-tirth: api-dev-tirth.${self:custom.baseDomain}
+    dev-pooja: api-dev-pooja.${self:custom.baseDomain}
+    dev-heet: api-dev-heet.${self:custom.baseDomain}
+    test: api-test.${self:custom.baseDomain}
+    prod: api.${self:custom.baseDomain}
+  # WebSocket domain settings
+  wsDomains:
+    dev-dhruv: ws-dev-dhruv.${self:custom.baseDomain}
+    dev-tirth: ws-dev-tirth.${self:custom.baseDomain}
+    dev-pooja: ws-dev-pooja.${self:custom.baseDomain}
+    dev-heet: ws-dev-heet.${self:custom.baseDomain}
+    test: ws-test.${self:custom.baseDomain}
+    prod: ws.${self:custom.baseDomain}
+
+  # serverless-domain-manager plugin configuration
+  # Only active when CUSTOM_DOMAIN_ENABLED=true
+  customDomain:
+    domainName: ${self:custom.domains.${self:provider.stage}}
+    # Use regional endpoint for ap-south-1 (edge not supported in all regions)
+    endpointType: regional
+    # Certificate ARN (use this instead of certificateName to avoid needing acm:ListCertificates)
+    # Get ARN from AWS Console: ACM → Certificates → Copy ARN
+    certificateArn: ${env:ACM_CERTIFICATE_ARN, ''}
+    # Create Route53 record (set to false since we use Cloudflare)
+    createRoute53Record: false
+    # For HTTP API (API Gateway v2)
+    apiType: http
+    # Auto-create the custom domain if it doesn't exist
+    autoDomain: true
+    # Stage
+    stage: ${self:provider.stage}
+    # Enable/disable based on env var
+    enabled: ${self:custom.customDomainEnabled}
+
+  # Stage-specific settings
+  stages:
+    # Individual developer stages
+    dev-dhruv:
+      memorySize: 256
+      timeout: 29
+      logRetentionInDays: 3
+      deletionPolicy: Delete
+    dev-tirth:
+      memorySize: 256
+      timeout: 29
+      logRetentionInDays: 3
+      deletionPolicy: Delete
+    dev-pooja:
+      memorySize: 256
+      timeout: 29
+      logRetentionInDays: 3
+      deletionPolicy: Delete
+    dev-heet:
+      memorySize: 256
+      timeout: 29
+      logRetentionInDays: 3
+      deletionPolicy: Delete
+    # Test/staging environment
+    test:
+      memorySize: 512
+      timeout: 29
+      logRetentionInDays: 14
+      deletionPolicy: Delete
+    # Production environment
+    prod:
+      memorySize: 512
+      timeout: 29
+      logRetentionInDays: 30
+      deletionPolicy: Retain
+
+  # Current stage settings (resolved from stages above)
+  stageConfig: ${self:custom.stages.${self:provider.stage}, self:custom.stages.dev-heet}
+
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    target: node22
+    define:
+      'require.resolve': undefined
+    platform: node
+    concurrency: 10
+
+  serverless-offline:
+    httpPort: 3000
+    babelOptions:
+      presets: ['env']
+
+  # Auto-generated Swagger documentation
+  autoswagger:
+    title: 'Odoo Xadani API'
+    generateSwaggerOnDeploy: true
+    typefiles: ['./src/shared/types.ts', './src/modules/*/types.ts']
+    # Custom path for swagger documentation (instead of 'swagger')
+    swaggerPath: ''
+    apiKeyHeaders: ['Authorization']
+    basePath: '/'
+    host: ${self:custom.domains.${self:provider.stage}, ''}
+    schemes: ['https']
+    excludeStages: []
+    apiType: 'httpApi'
+    # No authorizer for swagger endpoints - they should be public
+    lambdaAuthorizer: null
+
+resources: ${file(resources.yml)}
+
+# Functions - imported from modules (one file per handler)
+functions:
+  # Users module - Admin operations (Clerk-based)
+  - ${file(src/modules/users/functions/listUsers.yml)}
+  - ${file(src/modules/users/functions/getUserDetails.yml)}
+  - ${file(src/modules/users/functions/inviteUser.yml)}
+  - ${file(src/modules/users/functions/listInvitations.yml)}
+  - ${file(src/modules/users/functions/revokeInvitation.yml)}
+  - ${file(src/modules/users/functions/resendInvitation.yml)}
+  - ${file(src/modules/users/functions/changeRole.yml)}
+  - ${file(src/modules/users/functions/banUser.yml)}
+  - ${file(src/modules/users/functions/unbanUser.yml)}
+  - ${file(src/modules/users/functions/deleteUser.yml)}
+  - ${file(src/modules/users/functions/getAdminStats.yml)}
+  - ${file(src/modules/users/functions/getPermissions.yml)}
+  # Demo module
+  - ${file(src/modules/demo/functions/userOnly.yml)}
+  - ${file(src/modules/demo/functions/adminOnly.yml)}
+  - ${file(src/modules/demo/functions/whoami.yml)}
+  # WebSocket module
+  - ${file(src/modules/websocket/functions/websocket.yml)}

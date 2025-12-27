@@ -1,0 +1,46 @@
+whoami:
+  handler: src/modules/demo/handlers/whoami.handler
+  events:
+    - httpApi:
+        path: /api/demo/whoami
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Demo
+        summary: Get current user information
+        description: Returns the authenticated user's role, permissions, and JWT claims
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: User information and permissions
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                        description: Unique user identifier
+                      email:
+                        type: string
+                        description: User email address
+                      role:
+                        type: string
+                        description: User role (admin, user, etc.)
+                  permissions:
+                    type: array
+                    items:
+                      type: string
+                    description: List of user permissions
+                  jwtClaims:
+                    type: object
+                    description: JWT token claims
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: Response timestamp
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token

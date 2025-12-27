@@ -1,0 +1,25 @@
+# WebSocket API functions
+websocketConnect:
+  handler: src/modules/websocket/handlers/connect.handler
+  events:
+    - websocket:
+        route: $connect
+
+websocketDisconnect:
+  handler: src/modules/websocket/handlers/disconnect.handler
+  events:
+    - websocket:
+        route: $disconnect
+
+websocketSendMessage:
+  handler: src/modules/websocket/handlers/sendMessage.handler
+  events:
+    - websocket:
+        route: sendMessage
+
+# Optional: Default route handler for unmatched routes
+websocketDefault:
+  handler: src/modules/websocket/handlers/sendMessage.handler
+  events:
+    - websocket:
+        route: $default

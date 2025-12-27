@@ -1,0 +1,48 @@
+getPermissions:
+  handler: src/modules/users/handlers/getPermissions.handler
+  events:
+    - httpApi:
+        path: /api/admin/permissions
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Users
+        summary: GET /api/admin/permissions
+        description: Get system roles and permissions configuration
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: Success
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      roles:
+                        type: array
+                        items:
+                          type: string
+                        description: Available roles in the system
+                      permissions:
+                        type: object
+                        description: Detailed permissions for each role
+                      modules:
+                        type: array
+                        items:
+                          type: string
+                        description: Available modules in the system
+                      actions:
+                        type: array
+                        items:
+                          type: string
+                        description: Available actions in the system
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - Insufficient permissions

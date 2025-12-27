@@ -1,0 +1,46 @@
+# User Only demo function - Accessible by both 'user' and 'admin' roles
+userOnly:
+  handler: src/modules/demo/handlers/userOnly.handler
+  events:
+    - httpApi:
+        path: /api/demo/user
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Demo
+        summary: User-level demo endpoint
+        description: Demonstrates user-level access control. Accessible by any authenticated user with 'demo' read permission (both 'user' and 'admin' roles)
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: User access granted successfully
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Hello User!
+                  role:
+                    type: string
+                    description: User role
+                    example: user
+                  userId:
+                    type: string
+                    description: Unique user identifier
+                  email:
+                    type: string
+                    description: User email address
+                  accessLevel:
+                    type: string
+                    example: user
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: Response timestamp
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing JWT token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - User lacks required permissions

@@ -1,0 +1,57 @@
+# Admin Only demo function - Accessible ONLY by 'admin' role
+adminOnly:
+  handler: src/modules/demo/handlers/adminOnly.handler
+  events:
+    - httpApi:
+        path: /api/demo/admin
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Demo
+        summary: Admin-only demo endpoint
+        description: Demonstrates admin-only access control. Protected by RBAC - requires 'readAny' permission on 'admin' module. Only 'admin' role has this permission.
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: Admin access granted successfully
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Admin Access Granted
+                  role:
+                    type: string
+                    description: User role
+                    example: admin
+                  userId:
+                    type: string
+                    description: Unique user identifier
+                  email:
+                    type: string
+                    description: User email address
+                  accessLevel:
+                    type: string
+                    example: admin
+                  adminCapabilities:
+                    type: array
+                    items:
+                      type: string
+                    description: List of admin capabilities
+                    example:
+                      - View all users
+                      - Modify any user
+                      - Delete users
+                      - Access system settings
+                      - View audit logs
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: Response timestamp
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing JWT token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - User is not an admin

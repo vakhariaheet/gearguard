@@ -1,0 +1,28 @@
+unbanUser:
+  handler: src/modules/users/handlers/unbanUser.handler
+  events:
+    - httpApi:
+        path: /api/admin/users/{userId}/unban
+        method: POST
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Users
+        summary: POST /api/admin/users/{userId}/unban
+        description: unbanUser endpoint
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: Success
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - Insufficient permissions

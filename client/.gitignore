@@ -1,0 +1,9 @@
+# Client-specific ignores
+# (Root .gitignore handles most patterns)
+
+# Vite build outputs
+dist
+dist-ssr
+
+# Local env files
+*.local

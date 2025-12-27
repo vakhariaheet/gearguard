@@ -1,0 +1,46 @@
+listInvitations:
+  handler: src/modules/users/handlers/listInvitations.handler
+  events:
+    - httpApi:
+        path: /api/admin/invitations
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Users
+        summary: List user invitations
+        description: Get a list of all pending user invitations (Admin only)
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: List of invitations
+              schema:
+                type: object
+                properties:
+                  invitations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Invitation ID
+                        email:
+                          type: string
+                          description: Invited user email
+                        role:
+                          type: string
+                          description: Assigned role
+                        status:
+                          type: string
+                          description: Invitation status
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: Creation timestamp
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - Admin access required

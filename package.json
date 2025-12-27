@@ -1,0 +1,37 @@
+{
+  "name": "odooxadani",
+  "version": "1.0.0",
+  "description": "Odoo Xadani - Production-grade serverless application",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "client"
+  ],
+  "scripts": {
+    "prepare": "husky install",
+    "backend": "cd backend && bun run dev",
+    "client": "cd client && bun run dev",
+    "test": "bun run --filter '*' test",
+    "lint": "bun run --filter '*' lint",
+    "lint:fix": "bun run --filter '*' lint:fix",
+    "typecheck": "bun run --filter '*' typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "devops": "cd scripts/devops && npm run dev",
+    "devops:old": "bun run scripts/dev-ops.ts"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "@types/node": "^25.0.3",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "author": "Odoo Xadani Team",
+  "license": "MIT"
+}

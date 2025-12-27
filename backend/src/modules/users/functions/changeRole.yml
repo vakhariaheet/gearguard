@@ -1,0 +1,28 @@
+changeRole:
+  handler: src/modules/users/handlers/changeRole.handler
+  events:
+    - httpApi:
+        path: /api/admin/users/{userId}/role
+        method: PUT
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Users
+        summary: PUT /api/admin/users/{userId}/role
+        description: changeRole endpoint
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: Success
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - Insufficient permissions
