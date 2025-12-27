@@ -256,3 +256,8 @@ functions:
   - ${file(src/modules/equipment/functions/deleteEquipment.yml)}
   - ${file(src/modules/equipment/functions/assessEquipmentHealth.yml)}
   - ${file(src/modules/equipment/functions/createSampleEquipment.yml)}
+  # Landing module - Public APIs (no authentication required)
+  - ${file(src/modules/landing/functions/getLandingStats.yml)}
+  - ${file(src/modules/landing/functions/getSystemMetrics.yml)}
+  - ${file(src/modules/landing/functions/getTestimonials.yml)}
+  - ${file(src/modules/landing/functions/getDemoData.yml)}
