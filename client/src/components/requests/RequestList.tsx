@@ -128,9 +128,9 @@ export const RequestList = ({
   const statusCounts = getStatusCounts();
 
   return (
-    <div className="space-y-6">
+    <div className="request-list-container space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="request-list-header flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Maintenance Requests</h1>
           <p className="text-muted-foreground">
