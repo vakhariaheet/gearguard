@@ -1,9 +1,10 @@
 // Export all services
+export { teamsApi } from './teamsApi';
 export { apiClient } from './apiClient';
 export type { ApiClient } from './apiClient';
 export { StorageService, SessionStorageService } from './storage';
 export { usersApi, authApi } from './usersApi';
-export { teamsApi } from './teamsApi';
+export { publicApi } from './publicApi';
 export type {
   User,
   UserRole,

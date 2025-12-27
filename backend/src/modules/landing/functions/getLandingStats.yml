@@ -1,0 +1,9 @@
+getLandingStats:
+  handler: src/modules/landing/handlers/getLandingStats.handler
+  events:
+    - httpApi:
+        path: /api/public/stats
+        method: get
+  environment:
+    NODE_ENV: ${self:provider.stage}
+  timeout: 15

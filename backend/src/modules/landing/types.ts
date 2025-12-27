@@ -1,5 +1,5 @@
 /**
- * Landing Page Types for GearGuard
+ * Landing Module Types
  * Module M06: Enhanced Landing + Dynamic Content
  */
 
@@ -36,6 +36,22 @@ export interface SystemMetrics {
   };
 }
 
+export interface CustomerTestimonial {
+  id: string;
+  customerName: string;
+  companyName: string;
+  role: string;
+  content: string;
+  rating: number;
+  industry: string;
+  equipmentCount: number;
+  costSavings?: number;
+  uptimeImprovement?: number;
+  avatar?: string;
+  isPublic: boolean;
+  createdAt: string;
+}
+
 export interface LiveDemoData {
   sampleEquipment: Array<{
     id: string;
@@ -66,48 +82,4 @@ export interface LiveDemoData {
     systemLoad: number;
     responseTime: number;
   };
-}
-
-export interface FeatureHighlight {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  benefits: string[];
-}
-
-export interface TestimonialData {
-  id: string;
-  customerName: string;
-  companyName: string;
-  role: string;
-  content: string;
-  rating: number;
-  industry: string;
-  equipmentCount: number;
-  costSavings?: number;
-  uptimeImprovement?: number;
-  avatar?: string;
-  isPublic: boolean;
-  createdAt: string;
-}
-
-export interface PricingTier {
-  id: string;
-  name: string;
-  price: number;
-  period: 'month' | 'year';
-  features: string[];
-  recommended?: boolean;
-  maxEquipment?: number;
-  maxUsers?: number;
-}
-
-export interface ContactFormData {
-  name: string;
-  email: string;
-  company: string;
-  phone: string;
-  message: string;
-  requestType: 'demo' | 'contact' | 'support';
 }
