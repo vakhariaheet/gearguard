@@ -1,0 +1,10 @@
+updateTeam:
+  handler: src/modules/teams/handlers/updateTeam.handler
+  events:
+    - httpApi:
+        path: /api/teams/{id}
+        method: put
+        authorizer:
+          name: clerkJwtAuthorizer
+  timeout: 15
+  memorySize: 256

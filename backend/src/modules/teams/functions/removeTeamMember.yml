@@ -1,0 +1,10 @@
+removeTeamMember:
+  handler: src/modules/teams/handlers/removeTeamMember.handler
+  events:
+    - httpApi:
+        path: /api/teams/{id}/members/{userId}
+        method: delete
+        authorizer:
+          name: clerkJwtAuthorizer
+  timeout: 15
+  memorySize: 256

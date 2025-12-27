@@ -1,0 +1,10 @@
+listTeams:
+  handler: src/modules/teams/handlers/listTeams.handler
+  events:
+    - httpApi:
+        path: /api/teams
+        method: get
+        authorizer:
+          name: clerkJwtAuthorizer
+  timeout: 15
+  memorySize: 256

@@ -224,5 +224,15 @@ functions:
   - ${file(src/modules/demo/functions/userOnly.yml)}
   - ${file(src/modules/demo/functions/adminOnly.yml)}
   - ${file(src/modules/demo/functions/whoami.yml)}
+  # Teams module - Maintenance Teams Management
+  - ${file(src/modules/teams/functions/listTeams.yml)}
+  - ${file(src/modules/teams/functions/getTeam.yml)}
+  - ${file(src/modules/teams/functions/createTeam.yml)}
+  - ${file(src/modules/teams/functions/updateTeam.yml)}
+  - ${file(src/modules/teams/functions/deleteTeam.yml)}
+  - ${file(src/modules/teams/functions/addTeamMember.yml)}
+  - ${file(src/modules/teams/functions/removeTeamMember.yml)}
+  - ${file(src/modules/teams/functions/searchUsers.yml)}
+  - ${file(src/modules/teams/functions/suggestTeamAssignment.yml)}
   # WebSocket module
   - ${file(src/modules/websocket/functions/websocket.yml)}

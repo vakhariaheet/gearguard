@@ -1,31 +1,34 @@
-import { Link, useLocation } from 'react-router-dom'
-import { useUser } from '@clerk/clerk-react'
+import { Link, useLocation } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
 
 export function DashboardPage() {
-  const { user } = useUser()
-  const location = useLocation()
-  const isAdmin = (user?.publicMetadata?.role as string) === 'admin'
+  const { user } = useUser();
+  const location = useLocation();
+  const isAdmin = (user?.publicMetadata?.role as string) === 'admin';
 
   return (
     <>
       <nav className="navigation">
-        <Link 
+        <Link
           to="/dashboard"
           className={`nav-btn ${location.pathname === '/dashboard' ? 'active' : ''}`}
         >
           Dashboard
         </Link>
-        <Link 
+        <Link
           to="/websocket-test"
           className={`nav-btn ${location.pathname === '/websocket-test' ? 'active' : ''}`}
         >
           WebSocket Test
         </Link>
+        <Link
+          to="/teams"
+          className={`nav-btn ${location.pathname.startsWith('/teams') ? 'active' : ''}`}
+        >
+          Teams
+        </Link>
         {isAdmin && (
-          <Link 
-            to="/admin"
-            className={`nav-btn ${location.pathname === '/admin' ? 'active' : ''}`}
-          >
+          <Link to="/admin" className={`nav-btn ${location.pathname === '/admin' ? 'active' : ''}`}>
             Admin Panel
           </Link>
         )}
@@ -37,13 +40,21 @@ export function DashboardPage() {
           <p>You're successfully signed in!</p>
           <div className="user-info">
             <h3>User Information:</h3>
-            <p><strong>Email:</strong> {user?.emailAddresses[0]?.emailAddress}</p>
-            <p><strong>Name:</strong> {user?.firstName} {user?.lastName}</p>
-            <p><strong>User ID:</strong> {user?.id}</p>
-            <p><strong>Role:</strong> {(user?.publicMetadata?.role as string) || 'user'}</p>
+            <p>
+              <strong>Email:</strong> {user?.emailAddresses[0]?.emailAddress}
+            </p>
+            <p>
+              <strong>Name:</strong> {user?.firstName} {user?.lastName}
+            </p>
+            <p>
+              <strong>User ID:</strong> {user?.id}
+            </p>
+            <p>
+              <strong>Role:</strong> {(user?.publicMetadata?.role as string) || 'user'}
+            </p>
           </div>
         </div>
       </main>
     </>
-  )
+  );
 }

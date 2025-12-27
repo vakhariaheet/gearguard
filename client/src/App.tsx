@@ -13,6 +13,8 @@ import { PricingPage } from './pages/landing/PricingPage';
 import { AboutPage } from './pages/landing/AboutPage';
 import { ContactPage } from './pages/landing/ContactPage';
 import { HelpPage } from './pages/landing/HelpPage';
+import { TeamListPage } from './pages/teams/TeamListPage';
+import { TeamDetailsPage } from './pages/teams/TeamDetailsPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
 import './App.css';
@@ -146,6 +148,22 @@ function App() {
           element={
             <ProtectedRoute>
               <WebSocketTestPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teams"
+          element={
+            <ProtectedRoute>
+              <TeamListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/teams/:id"
+          element={
+            <ProtectedRoute>
+              <TeamDetailsPage />
             </ProtectedRoute>
           }
         />

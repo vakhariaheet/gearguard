@@ -1,0 +1,12 @@
+suggestTeamAssignment:
+  handler: src/modules/teams/handlers/suggestTeamAssignment.handler
+  events:
+    - httpApi:
+        path: /api/teams/suggest-assignment
+        method: post
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 30
+  memorySize: 512
