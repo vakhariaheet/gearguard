@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { RequestForm } from '../../components/requests/RequestForm';
 import { useRequestDetails, useUpdateRequest } from '../../hooks/useRequests';
-import { useToast } from '../../components/ui/use-toast';
+import { toast } from 'sonner';
 import { Card, CardContent } from '../../components/ui/card';
 import { Skeleton } from '../../components/ui/skeleton';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
@@ -11,7 +11,6 @@ import type { UpdateRequestRequest } from '../../types/requests';
 export const RequestEditPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const updateRequestMutation = useUpdateRequest();
 
   const { data: requestResponse, isLoading, error } = useRequestDetails(id!);
@@ -26,19 +25,12 @@ export const RequestEditPage = () => {
         data: requestData,
       });
 
-      toast({
-        title: 'Request updated',
-        description: 'The maintenance request has been updated successfully.',
-      });
+      toast.success('The maintenance request has been updated successfully.');
 
       // Navigate back to request details
       navigate(`/requests/${id}`);
     } catch (error: any) {
-      toast({
-        title: 'Update failed',
-        description: error.message || 'Failed to update the request. Please try again.',
-        variant: 'destructive',
-      });
+      toast.error(error.message || 'Failed to update the request. Please try again.');
     }
   };
 

@@ -235,6 +235,12 @@ functions:
   - ${file(src/modules/requests/functions/assignRequest.yml)}
   - ${file(src/modules/requests/functions/updateStatus.yml)}
   - ${file(src/modules/requests/functions/autoFillRequest.yml)}
+  # M07 Advanced Workflow Functions
+  - ${file(src/modules/requests/functions/autoAssignRequest.yml)}
+  - ${file(src/modules/requests/functions/escalateRequest.yml)}
+  - ${file(src/modules/requests/functions/getRequestWorkflow.yml)}
+  - ${file(src/modules/requests/functions/updateSLA.yml)}
+  - ${file(src/modules/requests/functions/getRequestAnalytics.yml)}
   # Demo module
   - ${file(src/modules/demo/functions/userOnly.yml)}
   - ${file(src/modules/demo/functions/adminOnly.yml)}

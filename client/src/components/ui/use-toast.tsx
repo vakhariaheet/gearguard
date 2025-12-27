@@ -8,4 +8,10 @@ export const toast = {
   warning: (message: string) => sonnerToast.warning(message),
 };
 
-export { toast as useToast };
+// Export useToast hook for compatibility
+export const useToast = () => ({
+  toast,
+});
+
+// Default export for direct import
+export default toast;

@@ -1,0 +1,12 @@
+updateSLA:
+  handler: src/modules/requests/handlers/updateSLA.handler
+  events:
+    - httpApi:
+        path: /api/requests/{id}/sla
+        method: put
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    DYNAMODB_TABLE: ${self:provider.environment.DYNAMODB_TABLE}
+  timeout: 30
+  memorySize: 256

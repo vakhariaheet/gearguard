@@ -18,10 +18,13 @@ import { TeamDetailsPage } from './pages/teams/TeamDetailsPage';
 import { EquipmentPage } from './pages/equipment/EquipmentPage';
 import { EquipmentHealthPage } from './pages/equipment/EquipmentHealthPage';
 import { MaintenanceSchedulePage } from './pages/equipment/MaintenanceSchedulePage';
+import { TeamEditPage } from './pages/teams/TeamEditPage';
 import { RequestListPage } from './pages/requests/RequestListPage';
 import { RequestCreatePage } from './pages/requests/RequestCreatePage';
 import { RequestDetailsPage } from './pages/requests/RequestDetailsPage';
 import { RequestEditPage } from './pages/requests/RequestEditPage';
+import { RequestAnalyticsPage } from './pages/requests/RequestAnalyticsPage';
+import { RequestWorkflowPage } from './pages/requests/RequestWorkflowPage';
 
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -216,6 +219,14 @@ function App() {
           }
         />
         <Route
+          path="/teams/:id/edit"
+          element={
+            <ProtectedRoute>
+              <TeamEditPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/requests"
           element={
             <ProtectedRoute>
@@ -244,6 +255,22 @@ function App() {
           element={
             <ProtectedRoute>
               <RequestEditPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/requests/analytics"
+          element={
+            <ProtectedRoute>
+              <RequestAnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/requests/:id/workflow"
+          element={
+            <ProtectedRoute>
+              <RequestWorkflowPage />
             </ProtectedRoute>
           }
         />

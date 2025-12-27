@@ -14,7 +14,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Wrench, Clock } from 'lucide-react';
 import { useUpdateRequestStatus } from '../../hooks/useRequests';
-import { useToast } from '../ui/use-toast';
+import { toast } from 'sonner';
 import type { MaintenanceRequest, RequestStatus } from '../../types/requests';
 
 interface StatusUpdateDialogProps {
@@ -44,7 +44,6 @@ export const StatusUpdateDialog = ({ request, open, onOpenChange }: StatusUpdate
   const [hoursSpent, setHoursSpent] = useState<string>('');
 
   const updateStatusMutation = useUpdateRequestStatus();
-  const { toast } = useToast();
 
   const handleSubmit = async () => {
     if (!request) return;
@@ -59,10 +58,7 @@ export const StatusUpdateDialog = ({ request, open, onOpenChange }: StatusUpdate
         },
       });
 
-      toast({
-        title: 'Status updated',
-        description: `Request status changed to ${newStatus}`,
-      });
+      toast.success(`Request status changed to ${newStatus}`);
 
       // Reset form and close dialog
       setNewStatus('New');
@@ -71,11 +67,7 @@ export const StatusUpdateDialog = ({ request, open, onOpenChange }: StatusUpdate
       onOpenChange(false);
     } catch (error) {
       console.error('Status update failed:', error);
-      toast({
-        title: 'Update failed',
-        description: 'Failed to update request status. Please try again.',
-        variant: 'destructive',
-      });
+      toast.error('Failed to update request status. Please try again.');
     }
   };
 

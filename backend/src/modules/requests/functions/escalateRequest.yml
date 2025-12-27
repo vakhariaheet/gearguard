@@ -1,0 +1,12 @@
+escalateRequest:
+  handler: src/modules/requests/handlers/escalateRequest.handler
+  events:
+    - httpApi:
+        path: /api/requests/{id}/escalate
+        method: post
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    DYNAMODB_TABLE: ${self:provider.environment.DYNAMODB_TABLE}
+  timeout: 30
+  memorySize: 256

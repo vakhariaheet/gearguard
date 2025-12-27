@@ -13,7 +13,7 @@ import { Label } from '../ui/label';
 import { UserCheck, Users, User } from 'lucide-react';
 import { useAssignRequest } from '../../hooks/useRequests';
 import { useTeams } from '../../hooks/useTeams';
-import { useToast } from '../ui/use-toast';
+import { toast } from 'sonner';
 import { useUserName } from '../../hooks/useUserName';
 import type { MaintenanceRequest } from '../../types/requests';
 
@@ -29,7 +29,6 @@ export const AssignRequestDialog = ({ request, open, onOpenChange }: AssignReque
 
   const assignRequestMutation = useAssignRequest();
   const { data: teamsResponse, isLoading: teamsLoading } = useTeams({ isActive: true });
-  const { toast } = useToast();
   const currentTechnicianName = useUserName(request?.assignedTechnician);
 
   const teams = teamsResponse?.data?.teams || [];
@@ -39,11 +38,7 @@ export const AssignRequestDialog = ({ request, open, onOpenChange }: AssignReque
 
     // Validate that at least one assignment is provided
     if (!assignedTeam && !assignedTechnician) {
-      toast({
-        title: 'Assignment required',
-        description: 'Please select either a team or technician to assign the request.',
-        variant: 'destructive',
-      });
+      toast.error('Please select either a team or technician to assign the request.');
       return;
     }
 
@@ -56,10 +51,7 @@ export const AssignRequestDialog = ({ request, open, onOpenChange }: AssignReque
         },
       });
 
-      toast({
-        title: 'Request assigned',
-        description: `Request has been assigned successfully.`,
-      });
+      toast.success('Request has been assigned successfully.');
 
       // Reset form and close dialog
       setAssignedTeam('');
@@ -67,11 +59,7 @@ export const AssignRequestDialog = ({ request, open, onOpenChange }: AssignReque
       onOpenChange(false);
     } catch (error) {
       console.error('Assignment failed:', error);
-      toast({
-        title: 'Assignment failed',
-        description: 'Failed to assign request. Please try again.',
-        variant: 'destructive',
-      });
+      toast.error('Failed to assign request. Please try again.');
     }
   };
 

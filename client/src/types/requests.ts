@@ -82,6 +82,156 @@ export interface ListRequestsResponse {
   totalCount: number;
 }
 
+// =============================================================================
+// ADVANCED WORKFLOW TYPES - Module M07 Frontend
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Workflow Management
+// -----------------------------------------------------------------------------
+export interface RequestWorkflow {
+  requestId: string;
+  currentStep: 'Created' | 'Assigned' | 'InProgress' | 'Review' | 'Completed' | 'Escalated';
+  workflowHistory: WorkflowStep[];
+  slaTracking: SLATracking;
+  escalationRules: EscalationRule[];
+  assignmentHistory: AssignmentHistory[];
+  estimatedCompletion: string;
+  actualCompletion?: string;
+}
+
+export interface WorkflowStep {
+  step: string;
+  status: 'Pending' | 'Active' | 'Completed' | 'Skipped';
+  startTime?: string;
+  endTime?: string;
+  duration?: number; // minutes
+  assignedTo?: string;
+  notes?: string;
+  automatedAction: boolean;
+}
+
+export interface SLATracking {
+  responseTime: {
+    target: number; // minutes
+    actual?: number;
+    deadline: string;
+    isBreached: boolean;
+    remainingTime: number;
+  };
+  resolutionTime: {
+    target: number; // minutes
+    actual?: number;
+    deadline: string;
+    isBreached: boolean;
+    remainingTime: number;
+  };
+  escalationTriggers: Array<{
+    level: number;
+    triggerTime: number;
+    triggered: boolean;
+    triggeredAt?: string;
+  }>;
+}
+
+export interface EscalationRule {
+  level: number;
+  triggerCondition: 'TimeElapsed' | 'SLABreach' | 'NoResponse' | 'HighPriority';
+  triggerValue: number; // minutes or threshold
+  escalateTo: string; // user ID or role
+  notificationMethod: 'Email' | 'SMS' | 'Push' | 'All';
+  isActive: boolean;
+  lastTriggered?: string;
+}
+
+export interface AssignmentHistory {
+  assignedTo: string;
+  assignedBy: string;
+  assignedAt: string;
+  reason: string;
+  isAutoAssigned: boolean;
+}
+
+// -----------------------------------------------------------------------------
+// Auto-Assignment Types
+// -----------------------------------------------------------------------------
+export interface AutoAssignmentRequest {
+  requestId: string;
+  equipmentId: string;
+  urgency: 'Low' | 'Medium' | 'High' | 'Critical';
+  requiredSkills?: string[];
+  preferredTeam?: string;
+  locationConstraints?: {
+    maxDistance?: number; // km
+    sameBuilding?: boolean;
+  };
+  workloadConsideration: boolean;
+  skillWeighting: number; // 0-1
+  locationWeighting: number; // 0-1
+  availabilityWeighting: number; // 0-1
+}
+
+export interface AutoAssignmentResponse {
+  assignedTechnician: {
+    userId: string;
+    name: string;
+    email: string;
+    team: string;
+    skills: string[];
+    currentWorkload: number;
+    location?: string;
+    estimatedArrival?: number; // minutes
+  };
+  alternativeTechnicians: Array<{
+    userId: string;
+    name: string;
+    score: number;
+    reason: string;
+  }>;
+  assignmentScore: number; // 0-100
+  assignmentReasoning: string[];
+  estimatedResponseTime: number; // minutes
+  confidence: number; // 0-1
+  autoAssigned: boolean;
+}
+
+// -----------------------------------------------------------------------------
+// Analytics Types
+// -----------------------------------------------------------------------------
+export interface RequestAnalytics {
+  timeRange: {
+    start: string;
+    end: string;
+  };
+  metrics: {
+    totalRequests: number;
+    averageResponseTime: number;
+    averageResolutionTime: number;
+    slaComplianceRate: number;
+    escalationRate: number;
+    autoAssignmentRate: number;
+  };
+  trends: {
+    requestVolume: Array<{ date: string; count: number }>;
+    responseTimesTrend: Array<{ date: string; avgTime: number }>;
+    slaBreaches: Array<{ date: string; breaches: number }>;
+  };
+  teamPerformance: Array<{
+    teamId: string;
+    teamName: string;
+    requestsHandled: number;
+    avgResponseTime: number;
+    slaCompliance: number;
+  }>;
+  equipmentInsights: Array<{
+    equipmentId: string;
+    equipmentName: string;
+    requestCount: number;
+    avgResolutionTime: number;
+    criticalIssues: number;
+  }>;
+}
+
 // -----------------------------------------------------------------------------
 // Smart Auto-Fill Types
 // -----------------------------------------------------------------------------
