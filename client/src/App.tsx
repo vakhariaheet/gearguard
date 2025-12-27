@@ -8,6 +8,11 @@ import { AdminPage } from './pages/AdminPage';
 import { LandingPage } from './pages/LandingPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { WebSocketTestPage } from './pages/WebSocketTestPage';
+import { FeaturesPage } from './pages/landing/FeaturesPage';
+import { PricingPage } from './pages/landing/PricingPage';
+import { AboutPage } from './pages/landing/AboutPage';
+import { ContactPage } from './pages/landing/ContactPage';
+import { HelpPage } from './pages/landing/HelpPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
 import './App.css';
@@ -40,8 +45,29 @@ function App() {
       <Toaster position="top-right" richColors closeButton expand={true} duration={4000} />
       <header className="app-header">
         <Link to="/" className="logo-link">
-          <h1>Hackathon App</h1>
+          <h1>GearGuard</h1>
         </Link>
+        <nav className="main-nav">
+          <SignedOut>
+            <div className="nav-links">
+              <Link to="/features" className="nav-link">
+                Features
+              </Link>
+              <Link to="/pricing" className="nav-link">
+                Pricing
+              </Link>
+              <Link to="/about" className="nav-link">
+                About
+              </Link>
+              <Link to="/help" className="nav-link">
+                Help
+              </Link>
+              <Link to="/contact" className="nav-link">
+                Contact
+              </Link>
+            </div>
+          </SignedOut>
+        </nav>
         <div className="auth-section">
           <SignedOut>
             <div className="auth-buttons">
@@ -49,7 +75,7 @@ function App() {
                 Sign In
               </Link>
               <Link to="/sign-up" className="auth-btn signup-btn">
-                Sign Up
+                Start Free Trial
               </Link>
             </div>
           </SignedOut>
@@ -78,6 +104,11 @@ function App() {
             </>
           }
         />
+        <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/help" element={<HelpPage />} />
         <Route
           path="/sign-in/*"
           element={
