@@ -234,11 +234,3 @@ functions:
   - ${file(src/modules/teams/functions/suggestTeamAssignment.yml)}
   # WebSocket module
   - ${file(src/modules/websocket/functions/websocket.yml)}
-  # Equipment module
-  - ${file(src/modules/equipment/functions/listEquipment.yml)}
-  - ${file(src/modules/equipment/functions/getEquipment.yml)}
-  - ${file(src/modules/equipment/functions/createEquipment.yml)}
-  - ${file(src/modules/equipment/functions/updateEquipment.yml)}
-  - ${file(src/modules/equipment/functions/deleteEquipment.yml)}
-  - ${file(src/modules/equipment/functions/assessEquipmentHealth.yml)}
-  - ${file(src/modules/equipment/functions/createSampleEquipment.yml)}

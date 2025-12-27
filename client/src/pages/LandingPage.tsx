@@ -1,15 +1,30 @@
 import { HeroSection } from '@/components/landing/HeroSection';
 import { FeaturesSection } from '@/components/landing/FeaturesSection';
-import { StatsSection } from '@/components/landing/StatsSection';
+import { DynamicStatsSection } from '@/components/landing/DynamicStatsSection';
+import { LiveMetricsDashboard } from '@/components/landing/LiveMetricsDashboard';
+import { LiveSystemDemo } from '@/components/landing/LiveSystemDemo';
+import { SuccessStoriesSection } from '@/components/landing/SuccessStoriesSection';
 import { FAQSection } from '@/components/landing/FAQSection';
 import { ContactForm } from '@/components/landing/ContactForm';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export function LandingPage() {
   return (
     <div className="landing-page">
       <HeroSection />
-      <StatsSection />
+      <ErrorBoundary>
+        <DynamicStatsSection />
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <LiveMetricsDashboard />
+      </ErrorBoundary>
       <FeaturesSection />
+      <ErrorBoundary>
+        <LiveSystemDemo />
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <SuccessStoriesSection />
+      </ErrorBoundary>
       <FAQSection />
       <section className="py-16 bg-muted/50">
         <div className="container mx-auto px-4">

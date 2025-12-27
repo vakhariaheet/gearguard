@@ -1,0 +1,9 @@
+getSystemMetrics:
+  handler: src/modules/landing/handlers/getSystemMetrics.handler
+  events:
+    - httpApi:
+        path: /api/public/metrics
+        method: get
+  environment:
+    NODE_ENV: ${self:provider.stage}
+  timeout: 15

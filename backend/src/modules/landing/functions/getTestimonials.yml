@@ -1,0 +1,9 @@
+getTestimonials:
+  handler: src/modules/landing/handlers/getTestimonials.handler
+  events:
+    - httpApi:
+        path: /api/public/testimonials
+        method: get
+  environment:
+    NODE_ENV: ${self:provider.stage}
+  timeout: 15
