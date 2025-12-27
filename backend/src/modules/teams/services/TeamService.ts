@@ -165,7 +165,7 @@ export class TeamService {
           if (!leadMember) {
             // Fetch lead technician details from Clerk
             try {
-              const leadUser = await clerkUserService.getUser(teamRecord.leadTechnician);
+              const leadUser = await clerkUserService.getUserById(teamRecord.leadTechnician);
               enrichedTeamRecord = {
                 ...teamRecord,
                 leadTechnicianName:

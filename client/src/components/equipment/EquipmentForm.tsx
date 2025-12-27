@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -7,8 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useCreateEquipment, useUpdateEquipment } from '../../hooks/useEquipment';
 import { useTeams } from '../../hooks/useTeams';
-import { useUserLookup } from '../../hooks/useUserLookup';
-import { UserSearchInput } from './UserSearchInput';
 import type {
   Equipment,
   CreateEquipmentRequest,
@@ -33,54 +31,19 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
   const { data: teamsData, isLoading: teamsLoading } = useTeams();
   const teams = teamsData?.data?.teams || [];
 
-  // Lookup user info when editing equipment
-  const { userInfo, isLoading: userLoading } = useUserLookup(equipment?.assignedEmployee);
-
   // Use equipment ID or timestamp to force re-render when equipment changes
   const formKey = equipment ? `edit-${equipment.id}` : 'create-new';
 
-  const [formData, setFormData] = useState<EquipmentFormData>({
-    equipmentName: '',
-    serialNumber: '',
-    category: '',
-    department: '',
-    assignedEmployee: '',
-    assignedTeam: '',
-    purchaseDate: '',
-    warrantyExpiry: '',
-    location: '',
-    status: 'Active',
-    specifications: '',
-    usageHours: '',
-    lastMaintenanceDate: '',
-  });
-
-  // Store user info for display
-  const [selectedUserInfo, setSelectedUserInfo] = useState<
-    { name: string; email: string } | undefined
-  >(undefined);
-
-  const [errors, setErrors] = useState<Partial<EquipmentFormData>>({});
-
-  // Populate form when editing
-  useEffect(() => {
-    console.log('Equipment prop changed:', equipment); // Debug log
+  const [formData, setFormData] = useState<EquipmentFormData>(() => {
     if (equipment) {
-      console.log('Equipment data received:', {
-        category: equipment.category,
-        department: equipment.department,
-        assignedTeam: equipment.assignedTeam,
-        status: equipment.status,
-      }); // Debug log
-
-      const newFormData = {
+      return {
         equipmentName: equipment.equipmentName || '',
         serialNumber: equipment.serialNumber || '',
         category: equipment.category || '',
         department: equipment.department || '',
         assignedEmployee: equipment.assignedEmployee || '',
         assignedTeam: equipment.assignedTeam || '',
-        purchaseDate: equipment.purchaseDate ? equipment.purchaseDate.split('T')[0] : '', // Convert to date input format
+        purchaseDate: equipment.purchaseDate ? equipment.purchaseDate.split('T')[0] : '',
         warrantyExpiry: equipment.warrantyExpiry ? equipment.warrantyExpiry.split('T')[0] : '',
         location: equipment.location || '',
         status: equipment.status || 'Active',
@@ -92,50 +55,26 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
           ? equipment.lastMaintenanceDate.split('T')[0]
           : '',
       };
-
-      console.log('Setting form data to:', newFormData); // Debug log
-
-      // Use setTimeout to ensure the form data is set after the component re-renders
-      setTimeout(() => {
-        setFormData(newFormData);
-      }, 0);
-
-      // If there's an assigned employee, use the looked up user info
-      if (equipment.assignedEmployee && userInfo) {
-        setSelectedUserInfo({
-          name: userInfo.name,
-          email: userInfo.email,
-        });
-      } else if (equipment.assignedEmployee && userLoading) {
-        setSelectedUserInfo({
-          name: 'Loading user details...',
-          email: 'Please wait...',
-        });
-      } else {
-        setSelectedUserInfo(undefined);
-      }
-    } else {
-      // Reset form for new equipment
-      setFormData({
-        equipmentName: '',
-        serialNumber: '',
-        category: '',
-        department: '',
-        assignedEmployee: '',
-        assignedTeam: '',
-        purchaseDate: '',
-        warrantyExpiry: '',
-        location: '',
-        status: 'Active',
-        specifications: '',
-        usageHours: '',
-        lastMaintenanceDate: '',
-      });
-      setSelectedUserInfo(undefined);
     }
-    // Clear any existing errors
-    setErrors({});
-  }, [equipment, userInfo, userLoading]);
+    return {
+      equipmentName: '',
+      serialNumber: '',
+      category: '',
+      department: '',
+      assignedEmployee: '',
+      assignedTeam: '',
+      purchaseDate: '',
+      warrantyExpiry: '',
+      location: '',
+      status: 'Active',
+      specifications: '',
+      usageHours: '',
+      lastMaintenanceDate: '',
+    };
+  });
+
+  // Store user info for display (no longer needed since we use team members)
+  const [errors, setErrors] = useState<Partial<EquipmentFormData>>({});
 
   const handleInputChange = (field: keyof EquipmentFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -143,20 +82,6 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-  };
-
-  const handleUserSelect = (userId: string, userInfo: { name: string; email: string }) => {
-    setFormData((prev) => ({ ...prev, assignedEmployee: userId }));
-    setSelectedUserInfo(userInfo);
-    // Clear error if exists
-    if (errors.assignedEmployee) {
-      setErrors((prev) => ({ ...prev, assignedEmployee: undefined }));
-    }
-  };
-
-  const handleUserClear = () => {
-    setFormData((prev) => ({ ...prev, assignedEmployee: '' }));
-    setSelectedUserInfo(undefined);
   };
 
   const validateForm = (): boolean => {
@@ -219,7 +144,7 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
       const requestData: CreateEquipmentRequest | UpdateEquipmentRequest = {
         equipmentName: formData.equipmentName.trim(),
         serialNumber: formData.serialNumber.trim(),
-        category: formData.category as any,
+        category: formData.category as Equipment['category'],
         department: formData.department,
         assignedEmployee: formData.assignedEmployee.trim() || undefined,
         assignedTeam: formData.assignedTeam,
@@ -228,7 +153,7 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
           ? new Date(formData.warrantyExpiry).toISOString()
           : undefined,
         location: formData.location.trim(),
-        status: formData.status as any,
+        status: formData.status as Equipment['status'],
         specifications: formData.specifications ? JSON.parse(formData.specifications) : undefined,
         usageHours: formData.usageHours ? Number(formData.usageHours) : undefined,
         lastMaintenanceDate: formData.lastMaintenanceDate
@@ -243,7 +168,7 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
       }
 
       onSuccess();
-    } catch (error) {
+    } catch {
       // Error handling is done in the hooks
     }
   };
@@ -336,17 +261,6 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="assignedEmployee">Assigned Employee</Label>
-              <UserSearchInput
-                value={formData.assignedEmployee}
-                onUserSelect={handleUserSelect}
-                onClear={handleUserClear}
-                selectedUserInfo={selectedUserInfo}
-                placeholder="Search and select an employee..."
-              />
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="assignedTeam">Assigned Team *</Label>
               {/* Debug info */}
 
@@ -356,6 +270,10 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
                 onValueChange={(value) => {
                   console.log('AssignedTeam changed to:', value);
                   handleInputChange('assignedTeam', value);
+                  // Clear assigned employee when team changes
+                  if (value !== formData.assignedTeam) {
+                    handleInputChange('assignedEmployee', '');
+                  }
                 }}
                 disabled={teamsLoading}
               >
@@ -376,6 +294,66 @@ export function EquipmentForm({ equipment, onSuccess, onCancel }: EquipmentFormP
                 </SelectContent>
               </Select>
               {errors.assignedTeam && <p className="text-sm text-red-600">{errors.assignedTeam}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="assignedEmployee">Assigned Employee</Label>
+              {formData.assignedTeam ? (
+                <Select
+                  key={`assignedEmployee-${formKey}-${formData.assignedTeam}`}
+                  value={formData.assignedEmployee || undefined}
+                  onValueChange={(value) => {
+                    if (value === 'none') {
+                      handleInputChange('assignedEmployee', '');
+                    } else {
+                      const selectedTeam = teams.find((team) => team.id === formData.assignedTeam);
+                      const selectedMember = selectedTeam?.members.find(
+                        (member) => member.userId === value
+                      );
+                      if (selectedMember) {
+                        handleInputChange('assignedEmployee', value);
+                      }
+                    }
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select team member (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No specific employee</SelectItem>
+                    {(() => {
+                      const selectedTeam = teams.find((team) => team.id === formData.assignedTeam);
+                      const teamMembers = selectedTeam?.members || [];
+
+                      if (teamMembers.length === 0) {
+                        return (
+                          <SelectItem value="no-members" disabled>
+                            No members in this team
+                          </SelectItem>
+                        );
+                      }
+
+                      return teamMembers.map((member) => (
+                        <SelectItem key={member.userId} value={member.userId}>
+                          <div className="flex flex-col">
+                            <span>{member.userName}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {member.role} • {member.email}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ));
+                    })()}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="p-3 border border-dashed border-muted-foreground/25 rounded-md text-center text-sm text-muted-foreground">
+                  Please select a team first to choose an employee
+                </div>
+              )}
+              {errors.assignedEmployee && (
+                <p className="text-sm text-red-600">{errors.assignedEmployee}</p>
+              )}
             </div>
 
             <div className="space-y-2">
