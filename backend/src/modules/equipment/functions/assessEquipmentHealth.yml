@@ -1,0 +1,45 @@
+assessEquipmentHealth:
+  handler: src/modules/equipment/handlers/assessEquipmentHealth.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}/assess-health
+        method: POST
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Equipment
+        summary: POST /api/equipment/{id}/assess-health
+        description: Assess equipment health using AI analysis
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: Health assessment completed successfully
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      equipmentId:
+                        type: string
+                      healthScore:
+                        type: number
+                      riskLevel:
+                        type: string
+                      recommendations:
+                        type: array
+                        items:
+                          type: string
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - Insufficient permissions
+          - statusCode: 404
+            responseBody:
+              description: Equipment not found
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 30
+  memorySize: 512

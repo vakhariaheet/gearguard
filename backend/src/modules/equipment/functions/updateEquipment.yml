@@ -1,0 +1,36 @@
+updateEquipment:
+  handler: src/modules/equipment/handlers/updateEquipment.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}
+        method: PUT
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Equipment
+        summary: PUT /api/equipment/{id}
+        description: Update equipment by ID
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: Equipment updated successfully
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+          - statusCode: 400
+            responseBody:
+              description: Bad Request - Invalid input data
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - Insufficient permissions
+          - statusCode: 404
+            responseBody:
+              description: Equipment not found
+          - statusCode: 409
+            responseBody:
+              description: Conflict - Serial number already exists

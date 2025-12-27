@@ -4,6 +4,7 @@ export type { ApiClient } from './apiClient';
 export { StorageService, SessionStorageService } from './storage';
 export { usersApi, authApi } from './usersApi';
 export { teamsApi } from './teamsApi';
+export { equipmentApi } from './equipmentApi';
 export type {
   User,
   UserRole,

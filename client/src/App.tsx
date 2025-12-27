@@ -15,6 +15,7 @@ import { ContactPage } from './pages/landing/ContactPage';
 import { HelpPage } from './pages/landing/HelpPage';
 import { TeamListPage } from './pages/teams/TeamListPage';
 import { TeamDetailsPage } from './pages/teams/TeamDetailsPage';
+import { EquipmentListPage } from './pages/equipment/EquipmentListPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
 import './App.css';
@@ -140,6 +141,14 @@ function App() {
           element={
             <ProtectedRoute requiredRole="admin">
               <AdminPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/equipment"
+          element={
+            <ProtectedRoute>
+              <EquipmentListPage />
             </ProtectedRoute>
           }
         />

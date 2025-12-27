@@ -1,0 +1,30 @@
+getEquipment:
+  handler: src/modules/equipment/handlers/getEquipment.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+        swaggerTags:
+          - Equipment
+        summary: GET /api/equipment/{id}
+        description: Get equipment by ID
+        methodResponses:
+          - statusCode: 200
+            responseBody:
+              description: Success
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+          - statusCode: 401
+            responseBody:
+              description: Unauthorized - Invalid or missing token
+          - statusCode: 403
+            responseBody:
+              description: Forbidden - Insufficient permissions
+          - statusCode: 404
+            responseBody:
+              description: Equipment not found

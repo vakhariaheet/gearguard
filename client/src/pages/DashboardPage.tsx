@@ -16,6 +16,12 @@ export function DashboardPage() {
           Dashboard
         </Link>
         <Link
+          to="/equipment"
+          className={`nav-btn ${location.pathname === '/equipment' ? 'active' : ''}`}
+        >
+          Equipment
+        </Link>
+        <Link
           to="/websocket-test"
           className={`nav-btn ${location.pathname === '/websocket-test' ? 'active' : ''}`}
         >
