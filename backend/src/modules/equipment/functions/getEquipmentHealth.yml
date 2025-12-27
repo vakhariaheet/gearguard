@@ -1,0 +1,8 @@
+getEquipmentHealth:
+  handler: src/modules/equipment/handlers/getEquipmentHealth.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}/health
+        method: get
+        authorizer:
+          name: clerkJwtAuthorizer

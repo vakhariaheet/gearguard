@@ -15,7 +15,9 @@ import { ContactPage } from './pages/landing/ContactPage';
 import { HelpPage } from './pages/landing/HelpPage';
 import { TeamListPage } from './pages/teams/TeamListPage';
 import { TeamDetailsPage } from './pages/teams/TeamDetailsPage';
-import { EquipmentListPage } from './pages/equipment/EquipmentListPage';
+import { EquipmentPage } from './pages/equipment/EquipmentPage';
+import { EquipmentHealthPage } from './pages/equipment/EquipmentHealthPage';
+import { MaintenanceSchedulePage } from './pages/equipment/MaintenanceSchedulePage';
 import { RequestListPage } from './pages/requests/RequestListPage';
 import { RequestCreatePage } from './pages/requests/RequestCreatePage';
 import { RequestDetailsPage } from './pages/requests/RequestDetailsPage';
@@ -81,6 +83,9 @@ function App() {
             </Link>
             <Link to="/requests" className="nav-link">
               Requests
+            </Link>
+            <Link to="/equipment" className="nav-link">
+              Equipment
             </Link>
             <Link to="/teams" className="nav-link">
               Teams
@@ -169,7 +174,23 @@ function App() {
           path="/equipment"
           element={
             <ProtectedRoute>
-              <EquipmentListPage />
+              <EquipmentPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/equipment/health"
+          element={
+            <ProtectedRoute>
+              <EquipmentHealthPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/equipment/maintenance"
+          element={
+            <ProtectedRoute>
+              <MaintenanceSchedulePage />
             </ProtectedRoute>
           }
         />

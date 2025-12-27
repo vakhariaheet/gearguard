@@ -7,6 +7,12 @@ import type {
   ListEquipmentResponse,
   HealthAssessmentRequest,
   HealthAssessmentResponse,
+  // M05 Enhancement types
+  EquipmentHealth,
+  PredictiveMaintenanceRequest,
+  PredictiveMaintenanceResponse,
+  SmartScheduleRequest,
+  SmartScheduleResponse,
 } from '../types/equipment';
 
 export class EquipmentApi {
@@ -73,6 +79,73 @@ export class EquipmentApi {
       `/api/equipment/${id}/assess-health`,
       data
     );
+    return response.data;
+  }
+
+  // =============================================================================
+  // M05 ENHANCEMENT: PREDICTIVE MAINTENANCE METHODS
+  // =============================================================================
+
+  /**
+   * Get current equipment health with enhanced metrics
+   */
+  async getEquipmentHealth(id: string): Promise<EquipmentHealth> {
+    const response = await apiClient.get<{ data: EquipmentHealth }>(`/api/equipment/${id}/health`);
+    return response.data;
+  }
+
+  /**
+   * Perform predictive maintenance analysis using AI
+   */
+  async predictMaintenance(
+    id: string,
+    data: Partial<PredictiveMaintenanceRequest>
+  ): Promise<PredictiveMaintenanceResponse> {
+    const response = await apiClient.post<{ data: PredictiveMaintenanceResponse }>(
+      `/api/equipment/${id}/predict-maintenance`,
+      data
+    );
+    return response.data;
+  }
+
+  /**
+   * Generate smart maintenance schedule
+   */
+  async getMaintenanceSchedule(
+    id: string,
+    params?: Partial<SmartScheduleRequest>
+  ): Promise<SmartScheduleResponse> {
+    const queryParams = new URLSearchParams();
+
+    if (params?.maintenanceType) queryParams.append('maintenanceType', params.maintenanceType);
+    if (params?.urgency) queryParams.append('urgency', params.urgency);
+    if (params?.estimatedDuration)
+      queryParams.append('estimatedDuration', params.estimatedDuration.toString());
+    if (params?.requiredSkills)
+      queryParams.append('requiredSkills', params.requiredSkills.join(','));
+    if (params?.preferredTeam) queryParams.append('preferredTeam', params.preferredTeam);
+
+    const queryString = queryParams.toString();
+    const endpoint = queryString
+      ? `/api/equipment/${id}/schedule?${queryString}`
+      : `/api/equipment/${id}/schedule`;
+
+    const response = await apiClient.get<{ data: SmartScheduleResponse }>(endpoint);
+    return response.data;
+  }
+
+  /**
+   * Update equipment status with enhanced tracking
+   */
+  async updateEquipmentStatus(
+    id: string,
+    status: Equipment['status'],
+    notes?: string
+  ): Promise<Equipment> {
+    const response = await apiClient.put<{ data: Equipment }>(`/api/equipment/${id}/status`, {
+      status,
+      notes,
+    });
     return response.data;
   }
 }

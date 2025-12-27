@@ -6,6 +6,10 @@ import type {
   UpdateEquipmentRequest,
   ListEquipmentQuery,
   HealthAssessmentRequest,
+  // M05 Enhancement types
+  PredictiveMaintenanceRequest,
+  SmartScheduleRequest,
+  Equipment,
 } from '../types/equipment';
 
 // Query keys
@@ -113,6 +117,85 @@ export function useAssessEquipmentHealth() {
     },
     onError: (error: any) => {
       toast.error(error.message || 'Health assessment failed');
+    },
+  });
+}
+
+// =============================================================================
+// M05 ENHANCEMENT: PREDICTIVE MAINTENANCE HOOKS
+// =============================================================================
+
+/**
+ * Hook to get equipment health with enhanced metrics
+ */
+export function useEquipmentHealth(id: string) {
+  return useQuery({
+    queryKey: [...equipmentKeys.detail(id), 'health'],
+    queryFn: () => equipmentApi.getEquipmentHealth(id),
+    enabled: !!id,
+    staleTime: 2 * 60 * 1000, // 2 minutes (health data changes more frequently)
+  });
+}
+
+/**
+ * Hook to perform predictive maintenance analysis
+ */
+export function usePredictiveMaintenance() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<PredictiveMaintenanceRequest> }) =>
+      equipmentApi.predictMaintenance(id, data),
+    onSuccess: (_, { id }) => {
+      // Invalidate health data as it might have changed
+      queryClient.invalidateQueries({ queryKey: [...equipmentKeys.detail(id), 'health'] });
+      toast.success('Predictive maintenance analysis completed');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Predictive maintenance analysis failed');
+    },
+  });
+}
+
+/**
+ * Hook to generate smart maintenance schedule
+ */
+export function useMaintenanceSchedule(id: string, params?: Partial<SmartScheduleRequest>) {
+  return useQuery({
+    queryKey: [...equipmentKeys.detail(id), 'schedule', params],
+    queryFn: () => equipmentApi.getMaintenanceSchedule(id, params),
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
+
+/**
+ * Hook to update equipment status
+ */
+export function useUpdateEquipmentStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      status,
+      notes,
+    }: {
+      id: string;
+      status: Equipment['status'];
+      notes?: string;
+    }) => equipmentApi.updateEquipmentStatus(id, status, notes),
+    onSuccess: (equipment) => {
+      // Invalidate and refetch equipment data
+      queryClient.invalidateQueries({ queryKey: equipmentKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: equipmentKeys.detail(equipment.id) });
+      queryClient.invalidateQueries({
+        queryKey: [...equipmentKeys.detail(equipment.id), 'health'],
+      });
+      toast.success(`Equipment status updated to "${equipment.status}"`);
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to update equipment status');
     },
   });
 }

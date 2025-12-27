@@ -1,0 +1,8 @@
+updateEquipmentStatus:
+  handler: src/modules/equipment/handlers/updateEquipmentStatus.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}/status
+        method: put
+        authorizer:
+          name: clerkJwtAuthorizer

@@ -1,0 +1,11 @@
+predictMaintenance:
+  handler: src/modules/equipment/handlers/predictMaintenance.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}/predict-maintenance
+        method: post
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 30

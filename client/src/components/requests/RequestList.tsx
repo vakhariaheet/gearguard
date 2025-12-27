@@ -71,7 +71,8 @@ export const RequestList = ({
     return allRequests.filter(
       (request) =>
         request.subject.toLowerCase().includes(query) ||
-        request.description.toLowerCase().includes(query) ||
+        request.description?.toLowerCase().includes(query) ||
+        false ||
         request.equipmentName.toLowerCase().includes(query) ||
         request.status.toLowerCase().includes(query) ||
         request.priority.toLowerCase().includes(query) ||
