@@ -1,4 +1,4 @@
-import { APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayProxyResult } from 'aws-lambda';
 
 // Standard HTTP status codes
 export const HTTP_STATUS = {
@@ -16,19 +16,21 @@ export const HTTP_STATUS = {
 
 // Common headers for CORS and security
 const COMMON_HEADERS = {
-  "Content-Type": "application/json",
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-  "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT,PATCH,DELETE",
-  "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
-  "X-XSS-Protection": "1; mode=block",
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers':
+    'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+  'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT,PATCH,DELETE',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
 } as const;
 
 // Response interface for consistent error handling
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
+  message?: string;
   error?: {
     code: string;
     message: string;
@@ -44,13 +46,25 @@ export interface ApiResponse<T = any> {
  * Create a successful API response
  */
 export const successResponse = <T>(
-  data: T,
+  payload: T | { data: T; message?: string },
   statusCode: number = HTTP_STATUS.OK,
   additionalHeaders: Record<string, string> = {}
 ): APIGatewayProxyResult => {
+  // Handle both direct data and wrapped data with message
+  let responseData: T;
+  let message: string | undefined;
+
+  if (payload && typeof payload === 'object' && 'data' in payload) {
+    responseData = (payload as { data: T; message?: string }).data;
+    message = (payload as { data: T; message?: string }).message;
+  } else {
+    responseData = payload as T;
+  }
+
   const response: ApiResponse<T> = {
     success: true,
-    data,
+    data: responseData,
+    ...(message && { message }),
     meta: {
       timestamp: new Date().toISOString(),
     },
@@ -96,56 +110,54 @@ export const errorResponse = (
  * Common error responses
  */
 export const commonErrors = {
-  badRequest: (message: string = "Bad Request", details?: any) =>
-    errorResponse("BAD_REQUEST", message, HTTP_STATUS.BAD_REQUEST, details),
+  badRequest: (message: string = 'Bad Request', details?: any) =>
+    errorResponse('BAD_REQUEST', message, HTTP_STATUS.BAD_REQUEST, details),
 
-  unauthorized: (message: string = "Unauthorized") =>
-    errorResponse("UNAUTHORIZED", message, HTTP_STATUS.UNAUTHORIZED),
+  unauthorized: (message: string = 'Unauthorized') =>
+    errorResponse('UNAUTHORIZED', message, HTTP_STATUS.UNAUTHORIZED),
 
-  forbidden: (message: string = "Forbidden") =>
-    errorResponse("FORBIDDEN", message, HTTP_STATUS.FORBIDDEN),
+  forbidden: (message: string = 'Forbidden') =>
+    errorResponse('FORBIDDEN', message, HTTP_STATUS.FORBIDDEN),
 
-  notFound: (resource: string = "Resource") =>
-    errorResponse("NOT_FOUND", `${resource} not found`, HTTP_STATUS.NOT_FOUND),
+  notFound: (resource: string = 'Resource') =>
+    errorResponse('NOT_FOUND', `${resource} not found`, HTTP_STATUS.NOT_FOUND),
 
-  conflict: (message: string = "Resource already exists") =>
-    errorResponse("CONFLICT", message, HTTP_STATUS.CONFLICT),
+  conflict: (message: string = 'Resource already exists') =>
+    errorResponse('CONFLICT', message, HTTP_STATUS.CONFLICT),
 
-  validationError: (message: string = "Validation failed", details?: any) =>
-    errorResponse("VALIDATION_ERROR", message, HTTP_STATUS.UNPROCESSABLE_ENTITY, details),
+  validationError: (message: string = 'Validation failed', details?: any) =>
+    errorResponse('VALIDATION_ERROR', message, HTTP_STATUS.UNPROCESSABLE_ENTITY, details),
 
-  internalServerError: (message: string = "Internal server error", details?: any) =>
-    errorResponse("INTERNAL_SERVER_ERROR", message, HTTP_STATUS.INTERNAL_SERVER_ERROR, details),
+  internalServerError: (message: string = 'Internal server error', details?: any) =>
+    errorResponse('INTERNAL_SERVER_ERROR', message, HTTP_STATUS.INTERNAL_SERVER_ERROR, details),
 };
 
 /**
  * Handle async function errors consistently
  */
 export const handleAsyncError = (error: any): APIGatewayProxyResult => {
-  console.error("Unhandled error:", error);
-  
+  console.error('Unhandled error:', error);
+
   // If it's already a formatted API response, return it
   if (error.statusCode && error.body) {
     return error;
   }
 
   // Handle common AWS errors
-  if (error.name === "ConditionalCheckFailedException") {
-    return commonErrors.conflict("Resource already exists or condition not met");
+  if (error.name === 'ConditionalCheckFailedException') {
+    return commonErrors.conflict('Resource already exists or condition not met');
   }
 
-  if (error.name === "ResourceNotFoundException") {
+  if (error.name === 'ResourceNotFoundException') {
     return commonErrors.notFound();
   }
 
-  if (error.name === "ValidationException") {
+  if (error.name === 'ValidationException') {
     return commonErrors.validationError(error.message);
   }
 
   // Default to internal server error
   return commonErrors.internalServerError(
-    process.env['NODE_ENV'] === "production" 
-      ? "An unexpected error occurred" 
-      : error.message
+    process.env['NODE_ENV'] === 'production' ? 'An unexpected error occurred' : error.message
   );
 };

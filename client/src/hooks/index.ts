@@ -7,6 +7,14 @@ export { useConfirmDialog } from './useConfirmDialog';
 export { useWebSocket, useWebSocketChat, useWebSocketNotifications } from './useWebSocket';
 export { useScrollToTop } from './useScrollToTop';
 
+// Landing page hooks
+export {
+  useLandingStats,
+  useSystemMetrics,
+  useLiveDemoData,
+  useTestimonials,
+} from './useLandingStats';
+
 // User API hooks
 export {
   useUsers,
