@@ -45,3 +45,9 @@ export {
   useSuggestTeamAssignment,
   TEAMS_QUERY_KEYS,
 } from './useTeams';
+
+// Team utility hooks
+export { useTeamName, useTeamNames } from './useTeamName';
+
+// User utility hooks
+export { useUserName, useUserNames } from './useUserName';

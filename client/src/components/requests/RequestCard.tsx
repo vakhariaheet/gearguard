@@ -25,6 +25,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { useTeamName } from '../../hooks/useTeamName';
+import { useUserName } from '../../hooks/useUserName';
 
 interface RequestCardProps {
   request: MaintenanceRequest;
@@ -48,6 +50,8 @@ export const RequestCard = ({
   userRole = 'employee',
 }: RequestCardProps) => {
   const canEdit = userRole !== 'employee' || !['Repaired', 'Scrap'].includes(request.status);
+  const teamName = useTeamName(request.assignedTeam);
+  const technicianName = useUserName(request.assignedTechnician);
   const canDelete = ['manager', 'admin'].includes(userRole) && request.status !== 'In Progress';
   const canAssign = ['manager', 'admin'].includes(userRole);
 
@@ -157,14 +161,14 @@ export const RequestCard = ({
           {request.assignedTechnician && (
             <div className="flex items-center gap-2">
               <User className="h-4 w-4 text-muted-foreground" />
-              <span>Assigned to: {request.assignedTechnician}</span>
+              <span>Assigned to: {technicianName}</span>
             </div>
           )}
 
           {request.assignedTeam && (
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-muted-foreground" />
-              <span>Team: {request.assignedTeam}</span>
+              <span>Team: {teamName}</span>
             </div>
           )}
 

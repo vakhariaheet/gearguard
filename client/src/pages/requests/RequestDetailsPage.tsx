@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { RequestDetails } from '../../components/requests/RequestDetails';
 import { StatusUpdateDialog } from '../../components/requests/StatusUpdateDialog';
+import { AssignRequestDialog } from '../../components/requests/AssignRequestDialog';
 import { useRequestDetails, useDeleteRequest } from '../../hooks/useRequests';
 import { useUser } from '@clerk/clerk-react';
 import { useToast } from '../../components/ui/use-toast';
@@ -29,6 +30,7 @@ export const RequestDetailsPage = () => {
 
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [statusUpdateDialog, setStatusUpdateDialog] = useState(false);
+  const [assignDialog, setAssignDialog] = useState(false);
 
   const { data: requestResponse, isLoading, error } = useRequestDetails(id!);
   const request = requestResponse?.data;
@@ -43,8 +45,8 @@ export const RequestDetailsPage = () => {
     setDeleteDialog(true);
   };
 
-  const handleAssign = (request: MaintenanceRequest) => {
-    navigate(`/requests/${request.id}/assign`);
+  const handleAssign = () => {
+    setAssignDialog(true);
   };
 
   const handleStatusUpdate = () => {
@@ -150,6 +152,9 @@ export const RequestDetailsPage = () => {
         open={statusUpdateDialog}
         onOpenChange={setStatusUpdateDialog}
       />
+
+      {/* Assign Request Dialog */}
+      <AssignRequestDialog request={request} open={assignDialog} onOpenChange={setAssignDialog} />
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialog} onOpenChange={setDeleteDialog}>

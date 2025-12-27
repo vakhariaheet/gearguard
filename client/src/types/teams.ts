@@ -13,6 +13,7 @@ export interface Team {
   maxCapacity?: number;
   isActive: boolean;
   leadTechnician?: string;
+  leadTechnicianName?: string; // Enriched field for display purposes
   currentWorkload: number;
   members: TeamMember[];
   createdAt: string;

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RequestList } from '../../components/requests/RequestList';
 import { StatusUpdateDialog } from '../../components/requests/StatusUpdateDialog';
+import { AssignRequestDialog } from '../../components/requests/AssignRequestDialog';
 import { useUser } from '@clerk/clerk-react';
 import { useToast } from '../../components/ui/use-toast';
 import { useDeleteRequest } from '../../hooks/useRequests';
@@ -39,6 +40,14 @@ export const RequestListPage = () => {
     request: null,
   });
 
+  const [assignDialog, setAssignDialog] = useState<{
+    open: boolean;
+    request: MaintenanceRequest | null;
+  }>({
+    open: false,
+    request: null,
+  });
+
   const userRole = (user?.publicMetadata?.role as string) || 'employee';
 
   const handleCreateRequest = () => {
@@ -58,7 +67,7 @@ export const RequestListPage = () => {
   };
 
   const handleAssignRequest = (request: MaintenanceRequest) => {
-    navigate(`/requests/${request.id}/assign`);
+    setAssignDialog({ open: true, request });
   };
 
   const handleStatusUpdate = (request: MaintenanceRequest) => {
@@ -103,6 +112,15 @@ export const RequestListPage = () => {
         open={statusUpdateDialog.open}
         onOpenChange={(open) =>
           setStatusUpdateDialog({ open, request: open ? statusUpdateDialog.request : null })
+        }
+      />
+
+      {/* Assign Request Dialog */}
+      <AssignRequestDialog
+        request={assignDialog.request}
+        open={assignDialog.open}
+        onOpenChange={(open) =>
+          setAssignDialog({ open, request: open ? assignDialog.request : null })
         }
       />
 

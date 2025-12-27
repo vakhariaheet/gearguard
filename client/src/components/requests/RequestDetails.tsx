@@ -22,6 +22,8 @@ import {
   CheckCircle,
   XCircle,
 } from 'lucide-react';
+import { useTeamName } from '../../hooks/useTeamName';
+import { useUserName } from '../../hooks/useUserName';
 
 interface RequestDetailsProps {
   request: MaintenanceRequest;
@@ -45,6 +47,9 @@ export const RequestDetails = ({
   const canEdit = userRole !== 'employee' || !['Repaired', 'Scrap'].includes(request.status);
   const canDelete = ['manager', 'admin'].includes(userRole) && request.status !== 'In Progress';
   const canAssign = ['manager', 'admin'].includes(userRole);
+  const teamName = useTeamName(request.assignedTeam);
+  const technicianName = useUserName(request.assignedTechnician);
+  const createdByName = useUserName(request.createdBy);
 
   const formatDateTime = (dateString?: string) => {
     if (!dateString) return 'N/A';
@@ -178,7 +183,9 @@ export const RequestDetails = ({
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Assigned Team:</span>
                 <span className="text-sm">
-                  {request.assignedTeam || (
+                  {request.assignedTeam ? (
+                    teamName
+                  ) : (
                     <span className="text-muted-foreground italic">Not assigned</span>
                   )}
                 </span>
@@ -186,7 +193,9 @@ export const RequestDetails = ({
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Assigned Technician:</span>
                 <span className="text-sm">
-                  {request.assignedTechnician || (
+                  {request.assignedTechnician ? (
+                    technicianName
+                  ) : (
                     <span className="text-muted-foreground italic">Not assigned</span>
                   )}
                 </span>
@@ -311,7 +320,7 @@ export const RequestDetails = ({
 
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Created By:</span>
-                <span className="text-sm">{request.createdBy}</span>
+                <span className="text-sm">{createdByName}</span>
               </div>
 
               <div className="flex items-center justify-between">
