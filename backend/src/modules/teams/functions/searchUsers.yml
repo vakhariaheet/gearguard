@@ -1,0 +1,11 @@
+searchUsers:
+  handler: src/modules/teams/handlers/searchUsers.handler
+  events:
+    - httpApi:
+        path: /api/teams/search-users
+        method: get
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    CLERK_SECRET_KEY: ${env:CLERK_SECRET_KEY}
+    CLERK_PUBLISHABLE_KEY: ${env:CLERK_PUBLISHABLE_KEY}

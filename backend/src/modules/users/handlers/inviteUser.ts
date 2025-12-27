@@ -4,6 +4,7 @@ import { InviteUserRequest, getAvailableRoles } from '../types';
 import { successResponse, handleAsyncError, commonErrors } from '../../../shared/response';
 import { AuthenticatedAPIGatewayEvent } from '../../../shared/types';
 import { withRbac } from '../../../shared/auth/rbacMiddleware';
+import { Role } from '../../../config/permissions';
 
 const userService = new ClerkUserService();
 
@@ -41,7 +42,7 @@ const baseHandler = async (
 
     const result = await userService.inviteUser(
       inviteData.email,
-      inviteData.role || defaultRole,
+      (inviteData.role as Role) || (defaultRole as Role),
       inviteData.redirectUrl
     );
 

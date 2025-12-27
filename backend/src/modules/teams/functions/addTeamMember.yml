@@ -1,0 +1,13 @@
+addTeamMember:
+  handler: src/modules/teams/handlers/addTeamMember.handler
+  events:
+    - httpApi:
+        path: /api/teams/{id}/members
+        method: post
+        authorizer:
+          name: clerkJwtAuthorizer
+  timeout: 15
+  memorySize: 256
+  environment:
+    CLERK_SECRET_KEY: ${env:CLERK_SECRET_KEY}
+    CLERK_PUBLISHABLE_KEY: ${env:CLERK_PUBLISHABLE_KEY}

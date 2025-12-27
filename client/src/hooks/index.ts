@@ -24,3 +24,16 @@ export {
   userKeys,
   authKeys,
 } from './useUsers';
+
+// Teams API hooks
+export {
+  useTeams,
+  useTeam,
+  useCreateTeam,
+  useUpdateTeam,
+  useDeleteTeam,
+  useAddTeamMember,
+  useRemoveTeamMember,
+  useSuggestTeamAssignment,
+  TEAMS_QUERY_KEYS,
+} from './useTeams';

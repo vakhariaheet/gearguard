@@ -1,0 +1,10 @@
+createTeam:
+  handler: src/modules/teams/handlers/createTeam.handler
+  events:
+    - httpApi:
+        path: /api/teams
+        method: post
+        authorizer:
+          name: clerkJwtAuthorizer
+  timeout: 15
+  memorySize: 256
