@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Lightbulb, Clock, AlertTriangle, Loader2 } from 'lucide-react';
-import { useToast } from '../ui/use-toast';
+import { toast } from 'sonner';
 import { useAutoFillSuggestions, useEquipment } from '../../hooks/useRequests';
 import type {
   CreateRequestRequest,
@@ -28,7 +28,6 @@ export const SmartRequestForm = ({
   isLoading = false,
   initialData,
 }: SmartRequestFormProps) => {
-  const { toast } = useToast();
   const { data: equipmentResponse } = useEquipment();
   const autoFillMutation = useAutoFillSuggestions();
 
@@ -65,20 +64,13 @@ export const SmartRequestForm = ({
       setAutoFillSuggestion(response.data);
     } catch (error) {
       console.error('Auto-fill failed:', error);
-      toast({
-        title: 'Auto-fill failed',
-        description: 'Could not generate suggestions. Please continue manually.',
-        variant: 'destructive',
-      });
+      toast.error('Could not generate suggestions. Please continue manually.');
     }
   };
 
   const applySuggestion = (field: keyof CreateRequestRequest, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    toast({
-      title: 'Suggestion applied',
-      description: `Applied suggestion for ${field}`,
-    });
+    toast.success(`Applied suggestion for ${field}`);
   };
 
   const applyAllSuggestions = () => {
@@ -92,10 +84,7 @@ export const SmartRequestForm = ({
       scheduledDate: autoFillSuggestion.suggestedScheduleDate || prev.scheduledDate,
     }));
 
-    toast({
-      title: 'All suggestions applied',
-      description: 'Applied all AI-generated suggestions to the form',
-    });
+    toast.success('Applied all AI-generated suggestions to the form');
   };
 
   const handleSubmit = (e: React.FormEvent) => {

@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { RequestCard } from './RequestCard';
-import { Search, Filter, Plus, RefreshCw, SortAsc, SortDesc } from 'lucide-react';
+import { Search, Filter, Plus, RefreshCw, SortAsc, SortDesc, BarChart3 } from 'lucide-react';
 import { useRequests } from '../../hooks/useRequests';
 import type {
   MaintenanceRequest,
@@ -22,6 +22,7 @@ interface RequestListProps {
   onAssignRequest?: (request: MaintenanceRequest) => void;
   onStatusUpdate?: (request: MaintenanceRequest) => void;
   onViewRequest?: (request: MaintenanceRequest) => void;
+  onViewAnalytics?: () => void;
   userRole?: string;
   showCreateButton?: boolean;
 }
@@ -33,6 +34,7 @@ export const RequestList = ({
   onAssignRequest,
   onStatusUpdate,
   onViewRequest,
+  onViewAnalytics,
   userRole = 'employee',
   showCreateButton = true,
 }: RequestListProps) => {
@@ -72,7 +74,6 @@ export const RequestList = ({
       (request) =>
         request.subject.toLowerCase().includes(query) ||
         request.description?.toLowerCase().includes(query) ||
-        false ||
         request.equipmentName.toLowerCase().includes(query) ||
         request.status.toLowerCase().includes(query) ||
         request.priority.toLowerCase().includes(query) ||
@@ -142,6 +143,12 @@ export const RequestList = ({
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
+          {onViewAnalytics && (
+            <Button variant="outline" onClick={onViewAnalytics}>
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Analytics
+            </Button>
+          )}
           {showCreateButton && onCreateRequest && (
             <Button onClick={onCreateRequest}>
               <Plus className="h-4 w-4 mr-2" />

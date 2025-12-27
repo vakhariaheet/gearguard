@@ -1,13 +1,28 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { RequestDetails } from '../../components/requests/RequestDetails';
 import { StatusUpdateDialog } from '../../components/requests/StatusUpdateDialog';
 import { AssignRequestDialog } from '../../components/requests/AssignRequestDialog';
+import { AutoAssignmentPanel } from '../../components/requests/AutoAssignmentPanel';
+import { WorkflowTimeline } from '../../components/requests/WorkflowTimeline';
+import { SLATracker } from '../../components/requests/SLATracker';
+import { EscalationManager } from '../../components/requests/EscalationManager';
 import { useRequestDetails, useDeleteRequest } from '../../hooks/useRequests';
 import { useUser } from '@clerk/clerk-react';
-import { useToast } from '../../components/ui/use-toast';
+import { toast } from 'sonner';
 import { Card, CardContent } from '../../components/ui/card';
 import { Skeleton } from '../../components/ui/skeleton';
-import { AlertCircle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
+import {
+  AlertCircle,
+  ArrowLeft,
+  FileText,
+  Zap,
+  GitBranch,
+  Clock,
+  AlertTriangle,
+} from 'lucide-react';
+import { Button } from '../../components/ui/button';
 import type { MaintenanceRequest } from '../../types/requests';
 import {
   Dialog,
@@ -17,20 +32,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../../components/ui/dialog';
-import { Button } from '../../components/ui/button';
 import { Trash2 } from 'lucide-react';
-import { useState } from 'react';
 
 export const RequestDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useUser();
-  const { toast } = useToast();
   const deleteRequestMutation = useDeleteRequest();
 
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [statusUpdateDialog, setStatusUpdateDialog] = useState(false);
   const [assignDialog, setAssignDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState('details');
 
   const { data: requestResponse, isLoading, error } = useRequestDetails(id!);
   const request = requestResponse?.data;
@@ -62,17 +75,10 @@ export const RequestDetailsPage = () => {
 
     try {
       await deleteRequestMutation.mutateAsync(request.id);
-      toast({
-        title: 'Request deleted',
-        description: 'The maintenance request has been deleted successfully.',
-      });
+      toast.success('The maintenance request has been deleted successfully.');
       navigate('/requests');
     } catch (error) {
-      toast({
-        title: 'Delete failed',
-        description: 'Failed to delete the request. Please try again.',
-        variant: 'destructive',
-      });
+      toast.error('Failed to delete the request. Please try again.');
     }
     setDeleteDialog(false);
   };
@@ -136,15 +142,73 @@ export const RequestDetailsPage = () => {
 
   return (
     <>
-      <RequestDetails
-        request={request}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onAssign={handleAssign}
-        onStatusUpdate={handleStatusUpdate}
-        onBack={handleBack}
-        userRole={userRole}
-      />
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={handleBack}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold">{request.subject}</h1>
+              <p className="text-muted-foreground">Request ID: {request.id}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* M07 Enhanced Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="details" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Details
+            </TabsTrigger>
+            <TabsTrigger value="auto-assign" className="flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              Auto-Assign
+            </TabsTrigger>
+            <TabsTrigger value="workflow" className="flex items-center gap-2">
+              <GitBranch className="h-4 w-4" />
+              Workflow
+            </TabsTrigger>
+            <TabsTrigger value="sla" className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              SLA Tracking
+            </TabsTrigger>
+            <TabsTrigger value="escalation" className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              Escalation
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="details" className="mt-6">
+            <RequestDetails
+              request={request}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onAssign={handleAssign}
+              onStatusUpdate={handleStatusUpdate}
+              userRole={userRole}
+            />
+          </TabsContent>
+
+          <TabsContent value="auto-assign" className="mt-6">
+            <AutoAssignmentPanel request={request} />
+          </TabsContent>
+
+          <TabsContent value="workflow" className="mt-6">
+            <WorkflowTimeline requestId={request.id} />
+          </TabsContent>
+
+          <TabsContent value="sla" className="mt-6">
+            <SLATracker requestId={request.id} />
+          </TabsContent>
+
+          <TabsContent value="escalation" className="mt-6">
+            <EscalationManager requestId={request.id} />
+          </TabsContent>
+        </Tabs>
+      </div>
 
       {/* Status Update Dialog */}
       <StatusUpdateDialog

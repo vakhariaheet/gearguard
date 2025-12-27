@@ -1,0 +1,12 @@
+getRequestWorkflow:
+  handler: src/modules/requests/handlers/getRequestWorkflow.handler
+  events:
+    - httpApi:
+        path: /api/requests/{id}/workflow
+        method: get
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    DYNAMODB_TABLE: ${self:provider.environment.DYNAMODB_TABLE}
+  timeout: 30
+  memorySize: 256

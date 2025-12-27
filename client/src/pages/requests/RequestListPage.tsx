@@ -4,7 +4,7 @@ import { RequestList } from '../../components/requests/RequestList';
 import { StatusUpdateDialog } from '../../components/requests/StatusUpdateDialog';
 import { AssignRequestDialog } from '../../components/requests/AssignRequestDialog';
 import { useUser } from '@clerk/clerk-react';
-import { useToast } from '../../components/ui/use-toast';
+import { toast } from 'sonner';
 import { useDeleteRequest } from '../../hooks/useRequests';
 import type { MaintenanceRequest } from '../../types/requests';
 import {
@@ -21,7 +21,6 @@ import { Trash2 } from 'lucide-react';
 export const RequestListPage = () => {
   const navigate = useNavigate();
   const { user } = useUser();
-  const { toast } = useToast();
   const deleteRequestMutation = useDeleteRequest();
 
   const [deleteDialog, setDeleteDialog] = useState<{
@@ -49,6 +48,10 @@ export const RequestListPage = () => {
   });
 
   const userRole = (user?.publicMetadata?.role as string) || 'employee';
+
+  const handleViewAnalytics = () => {
+    navigate('/requests/analytics');
+  };
 
   const handleCreateRequest = () => {
     navigate('/requests/create');
@@ -79,17 +82,10 @@ export const RequestListPage = () => {
 
     try {
       await deleteRequestMutation.mutateAsync(deleteDialog.request.id);
-      toast({
-        title: 'Request deleted',
-        description: 'The maintenance request has been deleted successfully.',
-      });
+      toast.success('The maintenance request has been deleted successfully.');
       setDeleteDialog({ open: false, request: null });
     } catch (error) {
-      toast({
-        title: 'Delete failed',
-        description: 'Failed to delete the request. Please try again.',
-        variant: 'destructive',
-      });
+      toast.error('Failed to delete the request. Please try again.');
     }
   };
 
@@ -102,6 +98,7 @@ export const RequestListPage = () => {
         onAssignRequest={handleAssignRequest}
         onStatusUpdate={handleStatusUpdate}
         onViewRequest={handleViewRequest}
+        onViewAnalytics={handleViewAnalytics}
         userRole={userRole}
         showCreateButton={true}
       />
