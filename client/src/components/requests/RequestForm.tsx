@@ -1,20 +1,20 @@
-import { useState } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Loader2, Save, X } from 'lucide-react';
+import { Loader2, Save, X, Check, ChevronDown } from 'lucide-react';
 import { useEquipment } from '../../hooks/useRequests';
 import type {
   CreateRequestRequest,
   UpdateRequestRequest,
   MaintenanceRequest,
-  Equipment,
   RequestType,
   RequestPriority,
 } from '../../types/requests';
+import type { Equipment } from '../../types/equipment';
 
 interface RequestFormProps {
   onSubmit: (requestData: CreateRequestRequest | UpdateRequestRequest) => void;
@@ -43,8 +43,52 @@ export const RequestForm = ({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [equipmentSearchOpen, setEquipmentSearchOpen] = useState(false);
+  const [equipmentSearchValue, setEquipmentSearchValue] = useState('');
+  const equipmentDropdownRef = useRef<HTMLDivElement>(null);
 
   const equipmentOptions = equipmentResponse?.data?.equipment || [];
+
+  // Initialize search value when equipment options are loaded and there's an initial equipmentId
+  useEffect(() => {
+    if (initialData?.equipmentId && equipmentOptions.length > 0 && !equipmentSearchValue) {
+      const equipment = equipmentOptions.find((eq: Equipment) => eq.id === initialData.equipmentId);
+      if (equipment) {
+        setEquipmentSearchValue(equipment.equipmentName);
+      }
+    }
+  }, [equipmentOptions, initialData?.equipmentId, equipmentSearchValue]);
+
+  // Filter equipment based on search value
+  const filteredEquipment = useMemo(() => {
+    if (!equipmentSearchValue) return equipmentOptions;
+    return equipmentOptions.filter(
+      (equipment: Equipment) =>
+        equipment.equipmentName.toLowerCase().includes(equipmentSearchValue.toLowerCase()) ||
+        equipment.category.toLowerCase().includes(equipmentSearchValue.toLowerCase()) ||
+        equipment.department.toLowerCase().includes(equipmentSearchValue.toLowerCase())
+    );
+  }, [equipmentOptions, equipmentSearchValue]);
+
+  // Get selected equipment for display
+  const selectedEquipment = equipmentOptions.find(
+    (eq: Equipment) => eq.id === formData.equipmentId
+  );
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        equipmentDropdownRef.current &&
+        !equipmentDropdownRef.current.contains(event.target as Node)
+      ) {
+        setEquipmentSearchOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -107,6 +151,29 @@ export const RequestForm = ({
     }
   };
 
+  const handleEquipmentSelect = (equipment: Equipment) => {
+    handleFieldChange('equipmentId', equipment.id);
+    setEquipmentSearchOpen(false);
+    setEquipmentSearchValue(equipment.equipmentName);
+  };
+
+  const handleEquipmentInputChange = (value: string) => {
+    setEquipmentSearchValue(value);
+    setEquipmentSearchOpen(true);
+
+    // If the input is cleared, clear the selection
+    if (!value) {
+      handleFieldChange('equipmentId', '');
+    }
+  };
+
+  const handleEquipmentInputFocus = () => {
+    setEquipmentSearchOpen(true);
+    if (!equipmentSearchValue && selectedEquipment) {
+      setEquipmentSearchValue(selectedEquipment.equipmentName);
+    }
+  };
+
   const isFormValid = formData.subject.trim() && formData.equipmentId;
 
   return (
@@ -138,22 +205,62 @@ export const RequestForm = ({
 
             <div className="space-y-2">
               <Label htmlFor="equipment">Equipment *</Label>
-              <Select
-                value={formData.equipmentId}
-                onValueChange={(value) => handleFieldChange('equipmentId', value)}
-                disabled={mode === 'edit'} // Can't change equipment after creation
-              >
-                <SelectTrigger className={errors.equipmentId ? 'border-destructive' : ''}>
-                  <SelectValue placeholder="Select equipment..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {equipmentOptions.map((equipment: Equipment) => (
-                    <SelectItem key={equipment.id} value={equipment.id}>
-                      {equipment.name} ({equipment.category})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="relative" ref={equipmentDropdownRef}>
+                <div className="relative">
+                  <Input
+                    id="equipment"
+                    value={
+                      equipmentSearchValue ||
+                      (selectedEquipment ? selectedEquipment.equipmentName : '')
+                    }
+                    onChange={(e) => handleEquipmentInputChange(e.target.value)}
+                    onFocus={handleEquipmentInputFocus}
+                    placeholder="Search equipment by name..."
+                    className={errors.equipmentId ? 'border-destructive pr-8' : 'pr-8'}
+                    disabled={mode === 'edit'} // Can't change equipment after creation
+                  />
+                  <ChevronDown
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground cursor-pointer"
+                    onClick={() => setEquipmentSearchOpen(!equipmentSearchOpen)}
+                  />
+                </div>
+
+                {equipmentSearchOpen && filteredEquipment.length > 0 && (
+                  <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto">
+                    {filteredEquipment.map((equipment: Equipment) => (
+                      <div
+                        key={equipment.id}
+                        className={`px-3 py-2 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0 ${
+                          formData.equipmentId === equipment.id ? 'bg-blue-50' : ''
+                        }`}
+                        onClick={() => handleEquipmentSelect(equipment)}
+                      >
+                        <div className="flex items-center">
+                          {formData.equipmentId === equipment.id && (
+                            <Check className="mr-2 h-4 w-4 text-blue-600" />
+                          )}
+                          <div className="flex flex-col">
+                            <span className="font-medium text-sm text-gray-900">
+                              {equipment.equipmentName}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {equipment.category} • {equipment.department} • {equipment.location}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {equipmentSearchOpen && filteredEquipment.length === 0 && equipmentSearchValue && (
+                  <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
+                    <div className="px-3 py-2 text-sm text-gray-500">
+                      No equipment found matching "{equipmentSearchValue}"
+                    </div>
+                  </div>
+                )}
+              </div>
               {errors.equipmentId && (
                 <p className="text-sm text-destructive">{errors.equipmentId}</p>
               )}

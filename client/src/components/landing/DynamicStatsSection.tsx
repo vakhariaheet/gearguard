@@ -83,7 +83,7 @@ export const DynamicStatsSection = () => {
     completedMaintenance: 12453,
     systemUptime: 99.7,
     averageResponseTime: 2.3,
-    costSavings: 284000,
+    costSavings: 2840,
     userSatisfaction: 94.7,
     teamsManaged: 24,
     lastUpdated: new Date().toISOString(),
@@ -127,7 +127,7 @@ export const DynamicStatsSection = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
           <Card className="hover:shadow-md transition-shadow">
             <CardContent className="p-4">
               <StatItem
@@ -205,7 +205,7 @@ export const DynamicStatsSection = () => {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow">
+          <Card className="hover:shadow-md transition-shadow text-2">
             <CardContent className="p-4">
               <StatItem
                 label="Teams Managed"

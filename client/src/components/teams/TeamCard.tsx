@@ -138,10 +138,12 @@ export const TeamCard = ({
                 />
                 <AvatarFallback className="text-xs">
                   {member.userName
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')
-                    .toUpperCase()}
+                    ? member.userName
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .toUpperCase()
+                    : '??'}
                 </AvatarFallback>
               </Avatar>
             ))}

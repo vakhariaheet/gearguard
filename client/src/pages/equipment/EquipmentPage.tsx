@@ -109,12 +109,12 @@ export function EquipmentPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-16">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center ">
         <div>
           <h1 className="text-3xl font-bold">Equipment Management</h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mt-2">
             Manage your equipment inventory, health monitoring, and maintenance scheduling
           </p>
         </div>
@@ -139,9 +139,9 @@ export function EquipmentPage() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Equipment</p>
@@ -152,7 +152,7 @@ export function EquipmentPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Active</p>
@@ -165,7 +165,7 @@ export function EquipmentPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Under Maintenance</p>
@@ -178,7 +178,7 @@ export function EquipmentPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Scrapped</p>
@@ -193,15 +193,15 @@ export function EquipmentPage() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="mt-8">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 ">
             <Filter className="h-5 w-5" />
             Filters
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
@@ -288,7 +288,7 @@ export function EquipmentPage() {
       </Card>
 
       {/* Equipment List */}
-      <Card>
+      <Card className="mt-8">
         <CardHeader>
           <CardTitle>Equipment Inventory</CardTitle>
         </CardHeader>
@@ -312,10 +312,10 @@ export function EquipmentPage() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {equipment.map((item) => (
                 <Card key={item.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
+                  <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1 min-w-0">
                         <h3 className="font-medium truncate">{item.equipmentName}</h3>
@@ -350,7 +350,7 @@ export function EquipmentPage() {
                       )}
                     </div>
 
-                    <div className="flex gap-2 mt-4">
+                    <div className="flex gap-2 mt-8">
                       <Button
                         variant="outline"
                         size="sm"

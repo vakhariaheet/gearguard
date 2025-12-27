@@ -12,10 +12,10 @@ import { useAutoFillSuggestions, useEquipment } from '../../hooks/useRequests';
 import type {
   CreateRequestRequest,
   RequestAutoFillResponse,
-  Equipment,
   RequestType,
   RequestPriority,
 } from '../../types/requests';
+import type { Equipment } from '../../types/equipment';
 
 interface SmartRequestFormProps {
   onSubmit: (requestData: CreateRequestRequest) => void;
@@ -130,7 +130,7 @@ export const SmartRequestForm = ({
                   <SelectContent>
                     {equipmentOptions.map((equipment: Equipment) => (
                       <SelectItem key={equipment.id} value={equipment.id}>
-                        {equipment.name} ({equipment.category})
+                        {equipment.equipmentName} ({equipment.category})
                       </SelectItem>
                     ))}
                   </SelectContent>
