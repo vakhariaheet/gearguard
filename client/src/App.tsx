@@ -78,9 +78,6 @@ function App() {
             </div>
           </SignedOut>
           <SignedIn>
-            <Link to="/dashboard" className="nav-link">
-              Dashboard
-            </Link>
             <Link to="/requests" className="nav-link">
               Requests
             </Link>
