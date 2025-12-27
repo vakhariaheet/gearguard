@@ -1,6 +1,5 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "odooxadani",
@@ -17,14 +16,6 @@
       "name": "odoo-xadani-backend",
       "version": "1.0.0",
       "dependencies": {
-        "@aws-sdk/client-apigatewaymanagementapi": "^3.952.0",
-        "@aws-sdk/client-dynamodb": "^3.948.0",
-        "@aws-sdk/client-s3": "^3.948.0",
-        "@aws-sdk/client-ses": "^3.948.0",
-        "@aws-sdk/client-sqs": "^3.948.0",
-        "@aws-sdk/credential-provider-node": "^3.948.0",
-        "@aws-sdk/lib-dynamodb": "^3.948.0",
-        "@aws-sdk/s3-request-presigner": "^3.948.0",
         "@clerk/backend": "^2.27.0",
         "@google/genai": "^1.33.0",
         "@opensearch-project/opensearch": "^3.5.1",
@@ -52,12 +43,25 @@
         "ts-jest": "^29.1.1",
         "typescript": "^5.3.2",
       },
+      "peerDependencies": {
+        "@aws-sdk/client-apigatewaymanagementapi": "^3.952.0",
+        "@aws-sdk/client-dynamodb": "^3.948.0",
+        "@aws-sdk/client-s3": "^3.948.0",
+        "@aws-sdk/client-ses": "^3.948.0",
+        "@aws-sdk/client-sqs": "^3.948.0",
+        "@aws-sdk/credential-provider-node": "^3.948.0",
+        "@aws-sdk/lib-dynamodb": "^3.948.0",
+        "@aws-sdk/s3-request-presigner": "^3.948.0",
+      },
     },
     "client": {
       "name": "vite-project",
       "version": "0.0.0",
       "dependencies": {
         "@clerk/clerk-react": "^5.58.1",
+        "@dnd-kit/core": "^6.3.1",
+        "@dnd-kit/sortable": "^10.0.0",
+        "@dnd-kit/utilities": "^3.2.2",
         "@radix-ui/react-alert-dialog": "^1.1.15",
         "@radix-ui/react-avatar": "^1.1.11",
         "@radix-ui/react-dialog": "^1.1.15",
@@ -352,6 +356,14 @@
     "@commitlint/top-level": ["@commitlint/top-level@18.6.1", "", { "dependencies": { "find-up": "^5.0.0" } }, "sha512-HyiHQZUTf0+r0goTCDs/bbVv/LiiQ7AVtz6KIar+8ZrseB9+YJAIo8HQ2IC2QT1y3N1lbW6OqVEsTHjbT6hGSw=="],
 
     "@commitlint/types": ["@commitlint/types@18.6.1", "", { "dependencies": { "chalk": "^4.1.0" } }, "sha512-gwRLBLra/Dozj2OywopeuHj2ac26gjGkz2cZ+86cTJOdtWfiRRr4+e77ZDAGc6MDWxaWheI+mAV5TLWWRwqrFg=="],
+
+    "@dnd-kit/accessibility": ["@dnd-kit/accessibility@3.1.1", "", { "dependencies": { "tslib": "^2.0.0" }, "peerDependencies": { "react": ">=16.8.0" } }, "sha512-2P+YgaXF+gRsIihwwY1gCsQSYnu9Zyj2py8kY5fFvUM1qm2WA2u639R6YNVfU4GWr+ZM5mqEsfHZZLoRONbemw=="],
+
+    "@dnd-kit/core": ["@dnd-kit/core@6.3.1", "", { "dependencies": { "@dnd-kit/accessibility": "^3.1.1", "@dnd-kit/utilities": "^3.2.2", "tslib": "^2.0.0" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-xkGBRQQab4RLwgXxoqETICr6S5JlogafbhNsidmrkVv2YRs5MLwpjoF2qpiGjQt8S9AoxtIV603s0GIUpY5eYQ=="],
+
+    "@dnd-kit/sortable": ["@dnd-kit/sortable@10.0.0", "", { "dependencies": { "@dnd-kit/utilities": "^3.2.2", "tslib": "^2.0.0" }, "peerDependencies": { "@dnd-kit/core": "^6.3.0", "react": ">=16.8.0" } }, "sha512-+xqhmIIzvAYMGfBYYnbKuNicfSsk4RksY2XdmJhT+HAC01nix6fHCztU68jooFiMUB01Ky3F0FyOvhG/BZrWkg=="],
+
+    "@dnd-kit/utilities": ["@dnd-kit/utilities@3.2.2", "", { "dependencies": { "tslib": "^2.0.0" }, "peerDependencies": { "react": ">=16.8.0" } }, "sha512-+MKAJEOfaBe5SmV6t34p80MMKhjvUz0vRrvVJbPT0WElzaOJ/1xs+D+KDv+tD/NE5ujfrChEcshd4fLn0wpiqg=="],
 
     "@effect/platform": ["@effect/platform@0.65.5", "", { "dependencies": { "find-my-way-ts": "^0.1.5", "multipasta": "^0.2.5" }, "peerDependencies": { "@effect/schema": "^0.73.4", "effect": "^3.8.3" } }, "sha512-FAORK6KoMQbd2VyLq/BMwcViy1txYd7XD9eYd5IGrXFpoOgWrSjp4zaSDlFPIEGgm68+n8fN0RelkbuMHCkSsg=="],
 

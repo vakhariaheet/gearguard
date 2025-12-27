@@ -170,7 +170,7 @@ export class TeamService {
                 ...teamRecord,
                 leadTechnicianName:
                   `${leadUser.firstName || ''} ${leadUser.lastName || ''}`.trim() ||
-                  leadUser.emailAddresses[0]?.emailAddress ||
+                  leadUser.email ||
                   'Unknown',
               };
             } catch (error) {

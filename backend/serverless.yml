@@ -262,6 +262,13 @@ functions:
   - ${file(src/modules/landing/functions/getDemoData.yml)}
   - ${file(src/modules/landing/functions/getTestimonials.yml)}
   - ${file(src/modules/landing/functions/getSystemMetrics.yml)}
+  # Kanban module - Kanban Board + Calendar Integration
+  - ${file(src/modules/kanban/functions/getKanbanBoard.yml)}
+  - ${file(src/modules/kanban/functions/updateRequestStatus.yml)}
+  - ${file(src/modules/kanban/functions/getCalendarEvents.yml)}
+  - ${file(src/modules/kanban/functions/createCalendarEvent.yml)}
+  - ${file(src/modules/kanban/functions/updateCalendarEvent.yml)}
+  - ${file(src/modules/kanban/functions/deleteCalendarEvent.yml)}
   # Equipment module - Equipment Management
   - ${file(src/modules/equipment/functions/listEquipment.yml)}
   - ${file(src/modules/equipment/functions/getEquipment.yml)}

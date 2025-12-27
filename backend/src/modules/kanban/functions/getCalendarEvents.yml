@@ -1,0 +1,10 @@
+getCalendarEvents:
+  handler: src/modules/kanban/handlers/getCalendarEvents.handler
+  events:
+    - httpApi:
+        path: /api/calendar/events
+        method: get
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    FUNCTION_NAME: getCalendarEvents

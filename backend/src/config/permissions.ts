@@ -36,7 +36,8 @@ const ROLE_MODULE_ACCESS: Record<string, Record<string, { any: string[]; own: st
     equipment: { any: ['create', 'read', 'update', 'delete'], own: [] }, // Full equipment management
     requests: { any: ['create', 'read', 'update', 'delete'], own: [] }, // Full request management
     teams: { any: ['create', 'read', 'update', 'delete'], own: [] }, // Full team management
-    dashboard: { any: ['read', 'update'], own: [] }, // Can view and customize dashboard (updated)
+    dashboard: { any: ['read'], own: [] }, // Can view dashboard
+    kanban: { any: ['create', 'read', 'update', 'delete'], own: [] }, // Full kanban management
     calendar: { any: ['create', 'read', 'update', 'delete'], own: [] }, // Full calendar management
     analytics: { any: ['read'], own: [] }, // Can view analytics
     users: { any: ['read', 'update'], own: ['read', 'update'] }, // Can manage team members, own profile (updated)
@@ -47,6 +48,7 @@ const ROLE_MODULE_ACCESS: Record<string, Record<string, { any: string[]; own: st
     requests: { any: ['create', 'read', 'update', 'delete'], own: [] },
     teams: { any: ['create', 'read', 'update', 'delete'], own: [] },
     dashboard: { any: ['create', 'read', 'update', 'delete'], own: [] },
+    kanban: { any: ['create', 'read', 'update', 'delete'], own: [] },
     calendar: { any: ['create', 'read', 'update', 'delete'], own: [] },
     analytics: { any: ['create', 'read', 'update', 'delete'], own: [] }, // Can configure analytics (updated)
     users: { any: ['create', 'read', 'update', 'delete'], own: [] }, // Full user management
@@ -61,10 +63,10 @@ const ALL_MODULES = [
   'requests',
   'teams',
   'dashboard',
+  'kanban',
   'calendar',
   'analytics',
   'users',
-  'notifications', // Added notifications module
   'demo',
   'admin',
   'websocket',

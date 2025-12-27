@@ -1,0 +1,10 @@
+deleteCalendarEvent:
+  handler: src/modules/kanban/handlers/deleteCalendarEvent.handler
+  events:
+    - httpApi:
+        path: /api/calendar/events/{id}
+        method: delete
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    FUNCTION_NAME: deleteCalendarEvent

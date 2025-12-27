@@ -207,6 +207,14 @@ backend/
 - Comprehensive logging and error handling
 - Deployment info saved to JSON file
 
+**AWS SDK Optimization**:
+
+- AWS SDK packages are configured as `peerDependencies` instead of `dependencies`
+- Lambda runtime provides AWS SDK v3 packages, reducing bundle size by ~50MB
+- `esbuild` excludes AWS SDK packages from bundling via `external` configuration
+- Development dependencies include AWS SDK packages for local testing
+- This optimization significantly reduces deployment time and cold start latency
+
 **Deployment Process**:
 
 1. Type checking

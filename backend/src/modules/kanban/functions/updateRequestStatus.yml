@@ -1,0 +1,10 @@
+updateRequestStatus:
+  handler: src/modules/kanban/handlers/updateRequestStatus.handler
+  events:
+    - httpApi:
+        path: /api/kanban/requests/{id}/status
+        method: put
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    FUNCTION_NAME: updateRequestStatus
