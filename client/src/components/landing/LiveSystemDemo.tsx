@@ -296,7 +296,7 @@ export const LiveSystemDemo = () => {
                                 <Wrench className="h-5 w-5 text-primary" />
                               </div>
                               <div>
-                                <div className="font-medium">{equipment.name}</div>
+                                <div className="font-medium">{equipment.equipmentName}</div>
                                 <div className="text-sm text-muted-foreground">
                                   {equipment.category}
                                 </div>

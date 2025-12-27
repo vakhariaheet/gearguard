@@ -259,15 +259,26 @@ export interface RequestAutoFillResponse {
 }
 
 // -----------------------------------------------------------------------------
-// Equipment Types (Mock for Foundation Phase)
+// Equipment Types
 // -----------------------------------------------------------------------------
 
 export interface Equipment {
   id: string;
-  name: string;
-  category: string;
+  equipmentName: string;
+  serialNumber: string;
+  category: 'Machine' | 'Vehicle' | 'Computer' | 'Tool' | 'Other';
   department: string;
-  location?: string;
+  assignedEmployee?: string;
+  assignedTeam: string;
+  purchaseDate: string;
+  warrantyExpiry?: string;
+  location: string;
+  status: 'Active' | 'Under Maintenance' | 'Scrapped';
+  specifications?: Record<string, any>;
+  usageHours?: number;
+  lastMaintenanceDate?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // -----------------------------------------------------------------------------

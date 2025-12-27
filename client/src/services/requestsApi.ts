@@ -111,98 +111,22 @@ export const requestsApi = {
 };
 
 // =============================================================================
-// MOCK EQUIPMENT API (Foundation Phase)
+// EQUIPMENT API ENDPOINTS
 // =============================================================================
 
 export const equipmentApi = {
   /**
-   * Get list of available equipment (mock data for foundation phase)
+   * Get list of available equipment
    */
   async listEquipment(): Promise<ApiResponse<{ equipment: Equipment[] }>> {
-    // Mock equipment data - in integration phase, this would be a real API call
-    const mockEquipment: Equipment[] = [
-      {
-        id: 'eq-001',
-        name: 'CNC Machine #1',
-        category: 'Machine',
-        department: 'Production',
-        location: 'Factory Floor A',
-      },
-      {
-        id: 'eq-002',
-        name: 'Forklift #3',
-        category: 'Vehicle',
-        department: 'Warehouse',
-        location: 'Warehouse B',
-      },
-      {
-        id: 'eq-003',
-        name: 'Server Rack A1',
-        category: 'Computer',
-        department: 'IT',
-        location: 'Data Center',
-      },
-      {
-        id: 'eq-004',
-        name: 'HVAC Unit B2',
-        category: 'HVAC',
-        department: 'Facilities',
-        location: 'Building B',
-      },
-      {
-        id: 'eq-005',
-        name: 'Conveyor Belt #2',
-        category: 'Machine',
-        department: 'Production',
-        location: 'Factory Floor A',
-      },
-      {
-        id: 'eq-006',
-        name: 'Printer HP-001',
-        category: 'Computer',
-        department: 'Office',
-        location: 'Office Floor 2',
-      },
-      {
-        id: 'eq-007',
-        name: 'Generator G1',
-        category: 'Electrical',
-        department: 'Facilities',
-        location: 'Utility Room',
-      },
-      {
-        id: 'eq-008',
-        name: 'Compressor C3',
-        category: 'Machine',
-        department: 'Production',
-        location: 'Factory Floor B',
-      },
-    ];
-
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    return {
-      data: { equipment: mockEquipment },
-      success: true,
-    };
+    return apiClient.get<ApiResponse<{ equipment: Equipment[] }>>('/api/equipment');
   },
 
   /**
-   * Get equipment by ID (mock data for foundation phase)
+   * Get equipment by ID
    */
   async getEquipment(equipmentId: string): Promise<ApiResponse<Equipment>> {
-    const equipment = await this.listEquipment();
-    const found = equipment.data.equipment.find((eq) => eq.id === equipmentId);
-
-    if (!found) {
-      throw new Error('Equipment not found');
-    }
-
-    return {
-      data: found,
-      success: true,
-    };
+    return apiClient.get<ApiResponse<Equipment>>(`/api/equipment/${equipmentId}`);
   },
 };
 
