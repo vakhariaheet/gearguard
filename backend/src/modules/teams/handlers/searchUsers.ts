@@ -18,6 +18,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     });
 
     const query = event.queryStringParameters?.['query'] || '';
+    const role = event.queryStringParameters?.['role'] || '';
     const limit = parseInt(event.queryStringParameters?.['limit'] || '10');
 
     if (!query.trim()) {
@@ -27,12 +28,12 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     // Search users using Clerk service
     const result = await clerkUserService.listUsers({
       query: query.trim(),
-      limit: Math.min(limit, 20), // Cap at 20 for performance
+      limit: Math.min(limit * 2, 40), // Fetch more to account for role filtering
       offset: 0,
     });
 
     // Filter out banned users and format for team member selection
-    const availableUsers = result.users
+    let availableUsers = result.users
       .filter((user) => !user.banned && user.email)
       .map((user) => ({
         id: user.id,
@@ -41,9 +42,20 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         firstName: user.firstName,
         lastName: user.lastName,
         profileImageUrl: user.profileImageUrl,
+        role: user.role,
       }));
 
-    logger.info(`Found ${availableUsers.length} available users for query: ${query}`);
+    // Filter by role if specified
+    if (role.trim()) {
+      availableUsers = availableUsers.filter((user) => user.role === role.trim());
+    }
+
+    // Limit the final results
+    availableUsers = availableUsers.slice(0, limit);
+
+    logger.info(
+      `Found ${availableUsers.length} available users for query: ${query}${role ? ` with role: ${role}` : ''}`
+    );
 
     return successResponse({
       users: availableUsers,

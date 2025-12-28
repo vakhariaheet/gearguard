@@ -1,0 +1,9 @@
+getDemoData:
+  handler: src/modules/landing/handlers/getDemoData.handler
+  events:
+    - httpApi:
+        path: /api/public/demo-data
+        method: get
+  environment:
+    NODE_ENV: ${self:provider.stage}
+  timeout: 15

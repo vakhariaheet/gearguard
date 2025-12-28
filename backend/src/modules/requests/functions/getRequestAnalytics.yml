@@ -1,0 +1,12 @@
+getRequestAnalytics:
+  handler: src/modules/requests/handlers/getRequestAnalytics.handler
+  events:
+    - httpApi:
+        path: /api/requests/analytics
+        method: get
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    DYNAMODB_TABLE: ${self:provider.environment.DYNAMODB_TABLE}
+  timeout: 30
+  memorySize: 512

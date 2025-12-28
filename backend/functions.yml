@@ -1,0 +1,223 @@
+# Users module - Admin operations (Clerk-based)
+listUsers:
+  handler: src/modules/users/handlers/listUsers.handler
+  events:
+    - httpApi:
+        path: /api/admin/users
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+
+getUserDetails:
+  handler: src/modules/users/handlers/getUserDetails.handler
+  events:
+    - httpApi:
+        path: /api/admin/users/{userId}
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+
+inviteUser:
+  handler: src/modules/users/handlers/inviteUser.handler
+  events:
+    - httpApi:
+        path: /api/admin/users/invite
+        method: POST
+        authorizer:
+          name: clerkJwtAuthorizer
+
+listInvitations:
+  handler: src/modules/users/handlers/listInvitations.handler
+  events:
+    - httpApi:
+        path: /api/admin/invitations
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+
+revokeInvitation:
+  handler: src/modules/users/handlers/revokeInvitation.handler
+  events:
+    - httpApi:
+        path: /api/admin/invitations/{invitationId}
+        method: DELETE
+        authorizer:
+          name: clerkJwtAuthorizer
+
+resendInvitation:
+  handler: src/modules/users/handlers/resendInvitation.handler
+  events:
+    - httpApi:
+        path: /api/admin/invitations/{invitationId}/resend
+        method: POST
+        authorizer:
+          name: clerkJwtAuthorizer
+
+changeRole:
+  handler: src/modules/users/handlers/changeRole.handler
+  events:
+    - httpApi:
+        path: /api/admin/users/{userId}/role
+        method: PUT
+        authorizer:
+          name: clerkJwtAuthorizer
+
+banUser:
+  handler: src/modules/users/handlers/banUser.handler
+  events:
+    - httpApi:
+        path: /api/admin/users/{userId}/ban
+        method: POST
+        authorizer:
+          name: clerkJwtAuthorizer
+
+unbanUser:
+  handler: src/modules/users/handlers/unbanUser.handler
+  events:
+    - httpApi:
+        path: /api/admin/users/{userId}/unban
+        method: POST
+        authorizer:
+          name: clerkJwtAuthorizer
+
+deleteUser:
+  handler: src/modules/users/handlers/deleteUser.handler
+  events:
+    - httpApi:
+        path: /api/admin/users/{userId}
+        method: DELETE
+        authorizer:
+          name: clerkJwtAuthorizer
+
+getAdminStats:
+  handler: src/modules/users/handlers/getAdminStats.handler
+  events:
+    - httpApi:
+        path: /api/admin/stats
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+
+getPermissions:
+  handler: src/modules/users/handlers/getPermissions.handler
+  events:
+    - httpApi:
+        path: /api/admin/permissions
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+
+# Demo module
+userOnly:
+  handler: src/modules/demo/handlers/userOnly.handler
+  events:
+    - httpApi:
+        path: /api/demo/user
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+
+adminOnly:
+  handler: src/modules/demo/handlers/adminOnly.handler
+  events:
+    - httpApi:
+        path: /api/demo/admin
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+
+whoami:
+  handler: src/modules/demo/handlers/whoami.handler
+  events:
+    - httpApi:
+        path: /api/demo/whoami
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+
+# WebSocket module
+websocketConnect:
+  handler: src/modules/websocket/handlers/websocket.connectHandler
+  events:
+    - websocket:
+        route: $connect
+
+websocketDisconnect:
+  handler: src/modules/websocket/handlers/websocket.disconnectHandler
+  events:
+    - websocket:
+        route: $disconnect
+
+websocketDefault:
+  handler: src/modules/websocket/handlers/websocket.defaultHandler
+  events:
+    - websocket:
+        route: $default
+
+# Equipment module
+listEquipment:
+  handler: src/modules/equipment/handlers/listEquipment.handler
+  events:
+    - httpApi:
+        path: /api/equipment
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+
+getEquipment:
+  handler: src/modules/equipment/handlers/getEquipment.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}
+        method: GET
+        authorizer:
+          name: clerkJwtAuthorizer
+
+createEquipment:
+  handler: src/modules/equipment/handlers/createEquipment.handler
+  events:
+    - httpApi:
+        path: /api/equipment
+        method: POST
+        authorizer:
+          name: clerkJwtAuthorizer
+
+updateEquipment:
+  handler: src/modules/equipment/handlers/updateEquipment.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}
+        method: PUT
+        authorizer:
+          name: clerkJwtAuthorizer
+
+deleteEquipment:
+  handler: src/modules/equipment/handlers/deleteEquipment.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}
+        method: DELETE
+        authorizer:
+          name: clerkJwtAuthorizer
+
+assessEquipmentHealth:
+  handler: src/modules/equipment/handlers/assessEquipmentHealth.handler
+  events:
+    - httpApi:
+        path: /api/equipment/{id}/assess-health
+        method: POST
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 30
+  memorySize: 512
+
+createSampleEquipment:
+  handler: src/modules/equipment/handlers/createSampleEquipment.handler
+  events:
+    - httpApi:
+        path: /api/equipment/sample
+        method: POST
+        authorizer:
+          name: clerkJwtAuthorizer

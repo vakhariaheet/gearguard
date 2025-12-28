@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import type { Team } from '@/types/teams';
 import { SkillBadges } from './SkillBadges';
+import { useLeadTechnicianName } from '@/hooks/useLeadTechnicianName';
 
 interface TeamCardProps {
   team: Team;
@@ -41,6 +42,12 @@ export const TeamCard = ({
   const workloadPercentage = team.maxCapacity
     ? Math.round((team.currentWorkload / team.maxCapacity) * 100)
     : 0;
+
+  // Try to fetch lead technician details if not in members
+  const leadMember = team.members.find((m) => m.userId === team.leadTechnician);
+  const { data: leadTechnicianUser } = useLeadTechnicianName(
+    team.leadTechnician && !leadMember ? team.leadTechnician : undefined
+  );
 
   const getWorkloadColor = (percentage: number) => {
     if (percentage < 50) return 'text-green-600';
@@ -131,10 +138,12 @@ export const TeamCard = ({
                 />
                 <AvatarFallback className="text-xs">
                   {member.userName
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')
-                    .toUpperCase()}
+                    ? member.userName
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .toUpperCase()
+                    : '??'}
                 </AvatarFallback>
               </Avatar>
             ))}
@@ -179,7 +188,29 @@ export const TeamCard = ({
             <Settings className="h-4 w-4 text-muted-foreground" />
             <span className="text-muted-foreground">Lead:</span>
             <span className="font-medium">
-              {team.members.find((m) => m.userId === team.leadTechnician)?.userName || 'Unknown'}
+              {(() => {
+                // First check if lead is in the members array
+                if (leadMember) {
+                  return leadMember.userName;
+                }
+                // Then check if we have the enriched leadTechnicianName from backend
+                if (team.leadTechnicianName) {
+                  return team.leadTechnicianName;
+                }
+                // Then check if we fetched the user details (fallback)
+                if (leadTechnicianUser) {
+                  return (
+                    `${leadTechnicianUser.firstName || ''} ${leadTechnicianUser.lastName || ''}`.trim() ||
+                    leadTechnicianUser.email
+                  );
+                }
+                // Show a more user-friendly message
+                return (
+                  <span className="text-muted-foreground italic">
+                    Assigned (not yet added to team)
+                  </span>
+                );
+              })()}
             </span>
           </div>
         )}

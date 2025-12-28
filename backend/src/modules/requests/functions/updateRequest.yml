@@ -1,0 +1,12 @@
+updateRequest:
+  handler: src/modules/requests/handlers/updateRequest.handler
+  events:
+    - httpApi:
+        path: /api/requests/{id}
+        method: put
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 30
+  memorySize: 256

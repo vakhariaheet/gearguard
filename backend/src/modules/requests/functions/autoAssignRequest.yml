@@ -1,0 +1,13 @@
+autoAssignRequest:
+  handler: src/modules/requests/handlers/autoAssignRequest.handler
+  events:
+    - httpApi:
+        path: /api/requests/{id}/auto-assign
+        method: post
+        authorizer:
+          name: clerkJwtAuthorizer
+  environment:
+    DYNAMODB_TABLE: ${self:provider.environment.DYNAMODB_TABLE}
+    GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+  timeout: 30
+  memorySize: 512

@@ -22,6 +22,7 @@ provider:
     SWAGGER_USERNAME: ${env:SWAGGER_USERNAME, 'admin'}
     SWAGGER_PASSWORD: ${env:SWAGGER_PASSWORD, 'changeme'}
     MAIN_TABLE_NAME: ${self:service}-${self:provider.stage}-main-table
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}-main-table
 
   # IAM permissions
   iam:
@@ -85,7 +86,6 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-esbuild
   - serverless-domain-manager
-  - serverless-offline
   - serverless-auto-swagger
 
 custom:
@@ -172,15 +172,23 @@ custom:
   # Current stage settings (resolved from stages above)
   stageConfig: ${self:custom.stages.${self:provider.stage}, self:custom.stages.dev-heet}
 
-  esbuild:
-    bundle: true
-    minify: false
-    sourcemap: true
-    target: node22
-    define:
-      'require.resolve': undefined
-    platform: node
-    concurrency: 10
+esbuild:
+  bundle: true
+  minify: true
+  sourcemap: false
+  concurrency: 25
+  zipConcurrency: 15
+  exclude:
+    [
+      '@aws-sdk/client-apigatewaymanagementapi',
+      '@aws-sdk/client-dynamodb',
+      '@aws-sdk/client-s3',
+      '@aws-sdk/client-ses',
+      '@aws-sdk/client-sqs',
+      '@aws-sdk/credential-provider-node',
+      '@aws-sdk/lib-dynamodb',
+      '@aws-sdk/s3-request-presigner',
+    ]
 
   serverless-offline:
     httpPort: 3000
@@ -205,9 +213,7 @@ custom:
 
 resources: ${file(resources.yml)}
 
-# Functions - imported from modules (one file per handler)
 functions:
-  # Users module - Admin operations (Clerk-based)
   - ${file(src/modules/users/functions/listUsers.yml)}
   - ${file(src/modules/users/functions/getUserDetails.yml)}
   - ${file(src/modules/users/functions/inviteUser.yml)}
@@ -220,6 +226,21 @@ functions:
   - ${file(src/modules/users/functions/deleteUser.yml)}
   - ${file(src/modules/users/functions/getAdminStats.yml)}
   - ${file(src/modules/users/functions/getPermissions.yml)}
+  # Requests module - Maintenance request management
+  - ${file(src/modules/requests/functions/listRequests.yml)}
+  - ${file(src/modules/requests/functions/getRequest.yml)}
+  - ${file(src/modules/requests/functions/createRequest.yml)}
+  - ${file(src/modules/requests/functions/updateRequest.yml)}
+  - ${file(src/modules/requests/functions/deleteRequest.yml)}
+  - ${file(src/modules/requests/functions/assignRequest.yml)}
+  - ${file(src/modules/requests/functions/updateStatus.yml)}
+  - ${file(src/modules/requests/functions/autoFillRequest.yml)}
+  # M07 Advanced Workflow Functions
+  - ${file(src/modules/requests/functions/autoAssignRequest.yml)}
+  - ${file(src/modules/requests/functions/escalateRequest.yml)}
+  - ${file(src/modules/requests/functions/getRequestWorkflow.yml)}
+  - ${file(src/modules/requests/functions/updateSLA.yml)}
+  - ${file(src/modules/requests/functions/getRequestAnalytics.yml)}
   # Demo module
   - ${file(src/modules/demo/functions/userOnly.yml)}
   - ${file(src/modules/demo/functions/adminOnly.yml)}
@@ -236,3 +257,33 @@ functions:
   - ${file(src/modules/teams/functions/suggestTeamAssignment.yml)}
   # WebSocket module
   - ${file(src/modules/websocket/functions/websocket.yml)}
+  # Landing module - Public API endpoints
+  - ${file(src/modules/landing/functions/getLandingStats.yml)}
+  - ${file(src/modules/landing/functions/getDemoData.yml)}
+  - ${file(src/modules/landing/functions/getTestimonials.yml)}
+  - ${file(src/modules/landing/functions/getSystemMetrics.yml)}
+  # Kanban module - Kanban Board + Calendar Integration
+  - ${file(src/modules/kanban/functions/getKanbanBoard.yml)}
+  - ${file(src/modules/kanban/functions/updateRequestStatus.yml)}
+  - ${file(src/modules/kanban/functions/getCalendarEvents.yml)}
+  - ${file(src/modules/kanban/functions/createCalendarEvent.yml)}
+  - ${file(src/modules/kanban/functions/updateCalendarEvent.yml)}
+  - ${file(src/modules/kanban/functions/deleteCalendarEvent.yml)}
+  # Equipment module - Equipment Management
+  - ${file(src/modules/equipment/functions/listEquipment.yml)}
+  - ${file(src/modules/equipment/functions/getEquipment.yml)}
+  - ${file(src/modules/equipment/functions/createEquipment.yml)}
+  - ${file(src/modules/equipment/functions/updateEquipment.yml)}
+  - ${file(src/modules/equipment/functions/deleteEquipment.yml)}
+  - ${file(src/modules/equipment/functions/assessEquipmentHealth.yml)}
+  - ${file(src/modules/equipment/functions/createSampleEquipment.yml)}
+  # Landing module - Public APIs (no authentication required)
+  - ${file(src/modules/landing/functions/getLandingStats.yml)}
+  - ${file(src/modules/landing/functions/getSystemMetrics.yml)}
+  - ${file(src/modules/landing/functions/getTestimonials.yml)}
+  - ${file(src/modules/landing/functions/getDemoData.yml)}
+  # M05 Enhancement: Enhanced Equipment Functions
+  - ${file(src/modules/equipment/functions/getEquipmentHealth.yml)}
+  - ${file(src/modules/equipment/functions/predictMaintenance.yml)}
+  - ${file(src/modules/equipment/functions/getMaintenanceSchedule.yml)}
+  - ${file(src/modules/equipment/functions/updateEquipmentStatus.yml)}
